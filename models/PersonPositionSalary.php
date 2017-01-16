@@ -4,22 +4,24 @@ namespace andahrm\positionSalary\models;
 
 use Yii;
 
-use andahrm\edoc\models\Edoc;
-use andahrm\person\models\Person;
-use andahrm\structure\models\Position;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
+use andahrm\person\models\Person;
+use andahrm\edoc\models\Edoc;
+use andahrm\structure\models\Position;
 /**
- * This is the model class for table "person_postion_salary".
+ * This is the model class for table "person_position_salary".
  *
  * @property integer $user_id
+ * @property integer $position_id
+ * @property integer $edoc_id
  * @property string $adjust_date
  * @property string $title
  * @property integer $status
  * @property string $step
- * @property integer $position_id
  * @property integer $level
  * @property string $salary
- * @property integer $edoc_id
  * @property integer $created_at
  * @property integer $created_by
  * @property integer $updated_at
@@ -29,14 +31,29 @@ use andahrm\structure\models\Position;
  * @property Person $user
  * @property Position $position
  */
-class PersonPostionSalary extends \yii\db\ActiveRecord
+class PersonPositionSalary extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'person_postion_salary';
+        return 'person_position_salary';
+    }
+  
+  /**
+     * @inheritdoc
+     */
+    function behaviors()
+    {
+        return [
+            [
+                'class' => BlameableBehavior::className(),
+            ],
+            [
+                'class' => TimestampBehavior::className(),
+            ],
+        ];
     }
 
     /**
@@ -45,8 +62,8 @@ class PersonPostionSalary extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'adjust_date', 'title', 'status', 'position_id', 'level', 'salary', 'edoc_id'], 'required'],
-            [['user_id', 'status', 'position_id', 'level', 'edoc_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
+            [['user_id', 'position_id', 'edoc_id', 'adjust_date', 'title', 'status', 'level', 'salary'], 'required'],
+            [['user_id', 'position_id', 'edoc_id', 'status', 'level', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['adjust_date'], 'safe'],
             [['salary'], 'number'],
             [['title'], 'string', 'max' => 255],
@@ -63,19 +80,19 @@ class PersonPostionSalary extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'user_id' => Yii::t('andahrm/postion-salary', 'User ID'),
-            'adjust_date' => Yii::t('andahrm/postion-salary', 'ลงวันที่'),
-            'title' => Yii::t('andahrm/postion-salary', 'Title'),
-            'status' => Yii::t('andahrm/postion-salary', 'Status'),
-            'step' => Yii::t('andahrm/postion-salary', 'Step'),
-            'position_id' => Yii::t('andahrm/postion-salary', 'Position ID'),
-            'level' => Yii::t('andahrm/postion-salary', 'Level'),
-            'salary' => Yii::t('andahrm/postion-salary', 'อัตราเงินเดือน'),
-            'edoc_id' => Yii::t('andahrm/postion-salary', 'เอกสารอ้างอิง'),
-            'created_at' => Yii::t('andahrm/postion-salary', 'Created At'),
-            'created_by' => Yii::t('andahrm/postion-salary', 'Created By'),
-            'updated_at' => Yii::t('andahrm/postion-salary', 'Updated At'),
-            'updated_by' => Yii::t('andahrm/postion-salary', 'Updated By'),
+            'user_id' => Yii::t('andahrm/position-salary', 'บุคลากร'),
+            'position_id' => Yii::t('andahrm/position-salary', 'ตำแหน่ง'),
+            'edoc_id' => Yii::t('andahrm/position-salary', 'เอกสารอ้างอิง'),
+            'adjust_date' => Yii::t('andahrm/position-salary', 'ลงวันที่'),
+            'title' => Yii::t('andahrm/position-salary', 'เรื่อง'),
+            'status' => Yii::t('andahrm/position-salary', 'สถานะ'),
+            'step' => Yii::t('andahrm/position-salary', 'ขั้น'),
+            'level' => Yii::t('andahrm/position-salary', 'ระดับ'),
+            'salary' => Yii::t('andahrm/position-salary', 'อัตราเงินเดือน'),
+            'created_at' => Yii::t('andahrm/position-salary', 'Created At'),
+            'created_by' => Yii::t('andahrm/position-salary', 'Created By'),
+            'updated_at' => Yii::t('andahrm/position-salary', 'Updated At'),
+            'updated_by' => Yii::t('andahrm/position-salary', 'Updated By'),
         ];
     }
 

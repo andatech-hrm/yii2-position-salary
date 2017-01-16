@@ -5,12 +5,12 @@ namespace andahrm\positionSalary\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use andahrm\positionSalary\models\PersonPostionSalary;
+use andahrm\positionSalary\models\PersonPositionSalary;
 
 /**
- * PersonPostionSalarySearch represents the model behind the search form about `andahrm\positionSalary\models\PersonPostionSalary`.
+ * PersonPositionSalarySearch represents the model behind the search form about `andahrm\positionSalary\models\PersonPositionSalary`.
  */
-class PersonPostionSalarySearch extends PersonPostionSalary
+class PersonPositionSalarySearch extends PersonPositionSalary
 {
     /**
      * @inheritdoc
@@ -18,7 +18,7 @@ class PersonPostionSalarySearch extends PersonPostionSalary
     public function rules()
     {
         return [
-            [['user_id', 'status', 'position_id', 'level', 'edoc_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
+            [['user_id', 'position_id', 'edoc_id', 'status', 'level', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['adjust_date', 'title', 'step'], 'safe'],
             [['salary'], 'number'],
         ];
@@ -42,13 +42,16 @@ class PersonPostionSalarySearch extends PersonPostionSalary
      */
     public function search($params)
     {
-        $query = PersonPostionSalary::find();
+        $query = PersonPositionSalary::find();
 
         // add conditions that should always apply here
+        //$query->with('edoc');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['adjust_date'=>SORT_DESC]]
         ]);
+        
 
         $this->load($params);
 
@@ -61,12 +64,12 @@ class PersonPostionSalarySearch extends PersonPostionSalary
         // grid filtering conditions
         $query->andFilterWhere([
             'user_id' => $this->user_id,
+            'position_id' => $this->position_id,
+            'edoc_id' => $this->edoc_id,
             'adjust_date' => $this->adjust_date,
             'status' => $this->status,
-            'position_id' => $this->position_id,
             'level' => $this->level,
             'salary' => $this->salary,
-            'edoc_id' => $this->edoc_id,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
             'updated_at' => $this->updated_at,
