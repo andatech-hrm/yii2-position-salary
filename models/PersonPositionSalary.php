@@ -6,6 +6,7 @@ use Yii;
 
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 use andahrm\person\models\Person;
 use andahrm\edoc\models\Edoc;
@@ -65,9 +66,9 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
             [['user_id', 'position_id', 'edoc_id', 'adjust_date', 'title', 'status', 'level', 'salary'], 'required'],
             [['user_id', 'position_id', 'edoc_id', 'status', 'level', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['adjust_date'], 'safe'],
-            [['salary'], 'number'],
+            [['step_adjust', 'salary','step'], 'number'],
             [['title'], 'string', 'max' => 255],
-            [['step'], 'string', 'max' => 4],
+            //[['step'], 'string', 'max' => 4],
             [['edoc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Edoc::className(), 'targetAttribute' => ['edoc_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Person::className(), 'targetAttribute' => ['user_id' => 'user_id']],
             [['position_id'], 'exist', 'skipOnError' => true, 'targetClass' => Position::className(), 'targetAttribute' => ['position_id' => 'id']],
@@ -80,22 +81,64 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'user_id' => Yii::t('andahrm/position-salary', 'บุคลากร'),
-            'position_id' => Yii::t('andahrm/position-salary', 'ตำแหน่ง'),
-            'edoc_id' => Yii::t('andahrm/position-salary', 'เอกสารอ้างอิง'),
-            'adjust_date' => Yii::t('andahrm/position-salary', 'ลงวันที่'),
-            'title' => Yii::t('andahrm/position-salary', 'เรื่อง'),
-            'status' => Yii::t('andahrm/position-salary', 'สถานะ'),
-            'step' => Yii::t('andahrm/position-salary', 'ขั้น'),
-            'level' => Yii::t('andahrm/position-salary', 'ระดับ'),
-            'salary' => Yii::t('andahrm/position-salary', 'อัตราเงินเดือน'),
+            'user_id' => Yii::t('andahrm/position-salary', 'User ID'),
+            'position_id' => Yii::t('andahrm/position-salary', 'Position ID'),
+            'edoc_id' => Yii::t('andahrm/position-salary', 'Edoc ID'),
+            'adjust_date' => Yii::t('andahrm/position-salary', 'Adjust Date'),
+            'title' => Yii::t('andahrm/position-salary', 'Title'),
+            'status' => Yii::t('andahrm/position-salary', 'Status'),
+            'step' => Yii::t('andahrm/position-salary', 'Step'),
+            'step_adjust' => Yii::t('andahrm/position-salary', 'Step Total'), 
+            'level' => Yii::t('andahrm/position-salary', 'Level'),
+            'salary' => Yii::t('andahrm/position-salary', 'Salary'),
             'created_at' => Yii::t('andahrm/position-salary', 'Created At'),
             'created_by' => Yii::t('andahrm/position-salary', 'Created By'),
             'updated_at' => Yii::t('andahrm/position-salary', 'Updated At'),
             'updated_by' => Yii::t('andahrm/position-salary', 'Updated By'),
         ];
     }
+    
+    public function scenarios(){
+      $scenarios = parent::scenarios();
+      
+      $scenarios['new-person'] = [
+          //'user_id',
+              'position_id', 
+              'edoc_id', 
+              'salary', 
+              'user_id', 
+              'level'
+          ];
+      
+      return $scenarios;
+    }
+    
+    
+   const STATUS_LEAVE = 0; #สินสุดการจ้าง
+   const STATUS_FIRST_TIME = 1; #บรรจุแรกเข้า
+   const STATUS_ADJUST = 2; #ปรับเงินเดือน
+   const STATUS_MOVE = 3; #ย้ายสายงาน
+    
+    public static function itemsAlias($key) {
+        $items = [
+            'status' => [
+                self::STATUS_FIRST_TIME => Yii::t('andahrm/position-salary', 'First time'),
+                self::STATUS_ADJUST => Yii::t('andahrm/position-salary',  'Adjust salary'),
+                self::STATUS_MOVE => Yii::t('andahrm/position-salary',  'Move line'),
+                self::STATUS_LEAVE => Yii::t('andahrm/position-salary',  'Leave'),
+            ],
+        ];
+        return ArrayHelper::getValue($items, $key, []);
+    }
+    
+    public function getStatusLabel() {
+        return ArrayHelper::getValue($this->getItemStatus(), $this->status);
+    }
 
+    public static function getItemStatus() {
+          return self::itemsAlias('status');
+     }
+    
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -119,4 +162,15 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Position::className(), ['id' => 'position_id']);
     }
+    
+    public function getPersonPosition()
+    {
+        return $this->hasOne(PersonPosition::className(), ['user_id' => 'user_id']);
+    }
+    
+    public function getAssessment()
+    {
+        return $this->hasOne(Assessment::className(), ['user_id' => 'user_id']);
+    }
+    
 }

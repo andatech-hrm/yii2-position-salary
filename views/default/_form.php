@@ -31,7 +31,7 @@ use kartik\widgets\Typeahead
           '</div></div>';
       ?>
       <?= $form->field($model, 'code')->widget(Typeahead::classname(),[
-              'options' => ['placeholder' => 'Filter as you type ...'],
+              'options' => ['placeholder' => Yii::t('andahrm/position-salary', 'Please type number doc')],
               'pluginOptions' => ['highlight'=>true],
               'dataset' => [
                     [
@@ -43,7 +43,8 @@ use kartik\widgets\Typeahead
                             'wildcard' => '%QUERY'
                         ],
                          'templates' => [
-                            'notFound' => '<div class="text-success" style="padding:0 8px">ไม่พบเอกสารนี้</div>',
+                            //'notFound' => '<div class="text-success" style="padding:0 8px">ไม่พบเอกสารนี้</div>',
+                            'notFound' => false,
                             'suggestion' => new JsExpression("Handlebars.compile('{$template}')")
                         ]
                     ]
@@ -64,7 +65,7 @@ use kartik\widgets\Typeahead
     <div class="clearfix"></div>
   </div>
   <div class="x_content">
-    <?= $form->field($model, 'id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'id')->hiddenInput(['maxlength' => true])->label(false)->hint(false) ?>
     <div class="row">
       <div class="col-sm-8">
         <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
@@ -88,10 +89,10 @@ use kartik\widgets\Typeahead
         <?= $form->field($model, 'file')->widget(FileInput::classname(), [
             'options' => ['accept' => 'pdf/*'],
             'pluginOptions' => [
-              'previewFileType' => 'pdf',
+              //'previewFileType' => 'pdf',
               //'showPreview' => false,
-              'showCaption' => false,
-              'elCaptionText' => '#customCaption',
+              //'showCaption' => false,
+              //'elCaptionText' => '#customCaption',
               'uploadUrl' => Url::to(['/edoc/default/file-upload'])
             ]
         ]);?>
@@ -104,7 +105,8 @@ use kartik\widgets\Typeahead
                     
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('andahrm/position-salary', 'Create') : Yii::t('andahrm/position-salary', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton(Yii::t('andahrm/position-salary', 'Assign person') , ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('andahrm/position-salary', 'Cencel') , ['index'],['class' => 'btn btn-link']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

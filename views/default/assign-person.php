@@ -12,14 +12,15 @@ use kartik\widgets\DatePicker;
 use kartik\widgets\FileInput;
 
 use andahrm\positionSalary\models\PersonPositionSalary;
-use andahrm\person\models\Person;
+use andahrm\positionSalary\models\PersonPosition;
 use andahrm\structure\models\Position;
 
 /* @var $this yii\web\View */
 /* @var $model andahrm\positionSalary\models\PersonPostionSalary */
 /* @var $form yii\widgets\ActiveForm */
-$this->title = Yii::t('andahrm/edoc', 'Create Edoc');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/edoc', 'Edocs'), 'url' => ['index']];
+$this->title = Yii::t('andahrm/position-salary', 'Assign Person Position Salary');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Update'), 'url' => ['update-edoc','edoc_id'=>$edoc_id]];
+$this->params['breadcrumbs'][] = $this->title;
 $this->params['breadcrumbs'][] = $this->title;
 
 $context = $this->context->action;
@@ -71,9 +72,9 @@ Modal::end();
                   <div class="x_title">
                     <h2><?=Yii::t('andahrm', 'Person')?></h2>
                     <div class="nav navbar-right panel_toolbox">
-                     <?= Html::button('<i class="fa fa-plus"></i> '.Yii::t('andahrm', 'Person'), [
+                     <?= Html::button('<i class="fa fa-plus"></i> '.Yii::t('andahrm/position-salary', 'Assign person'), [
                         'type' => 'button',
-                        'title' => '<i class="fa fa-plus"></i> '.Yii::t('andahrm', 'Person'),
+                        'title' => '<i class="fa fa-plus"></i> '.Yii::t('andahrm/position-salary', 'Assign person'),
                         'class' => 'btn btn-success',
                         //'onclick' => 'alert("This will launch the book creation form.\n\nDisabled for this demo!");',
                         'data-toggle' => 'modal',
@@ -93,17 +94,27 @@ Modal::end();
             
             <?php
             $session = Yii::$app->session;
-                    echo "<pre>";
-            print_r($session['person_position']);
-                    echo "</pre>";
-                    $PersonPositionSalary = new PersonPositionSalary;
+            
+            // echo "<pre>";
+            // print_r($session['person_position']);
+            // echo "</pre>";
+            
+            $PersonPositionSalary = new PersonPositionSalary();
             ?>
+            <div class="raw">
+                <div class="col-md-3 col-md-push-9">
+                    <?= $form->field($PersonPositionSalary,  "status")->dropdownList(PersonPositionSalary::getItemStatus(),[
+                'prompt'=>'เลือกสถานะ']);?>
+                </div>
+            </div>
+            
+            
             <table class="kv-grid-table table table-hover table-bordered table-striped kv-table-wrap">
                 <thead>
                     <tr>
                         <th><?= Html::label("#") ?></th>                        
-                        <th><?= Html::activeLabel($PersonPositionSalary, 'user_id') ?></th>
-                        <th nowrap=""><?= Html::activeLabel($PersonPositionSalary, 'position_id') ?></th>
+                        <th width="220"><?= Html::activeLabel($PersonPositionSalary, 'user_id') ?></th>
+                        <th width="180" nowrap=""><?= Html::activeLabel($PersonPositionSalary, 'position_id') ?></th>
                         <th nowrap=""><?= Html::activeLabel($PersonPositionSalary, 'level') ?></th>
                         <th nowrap=""><?= Html::activeLabel($PersonPositionSalary, 'salary') ?></th>
                         <th><?= Html::label("ลบ") ?></th>
@@ -118,6 +129,8 @@ Modal::end();
                         foreach ($session['person_position'][$modelEdoc->id] as $key => $sessionPerson):
                             $modelDevPerson = new PersonPositionSalary();
                             $sessionPerson = (object) $sessionPerson;
+                            
+                            $modelPerson = PersonPosition::findOne($sessionPerson->user_id);
                             //print_r($modelPerson);
                             //exit();
 //                        echo $modelPerson->char;
@@ -129,21 +142,26 @@ Modal::end();
                             $modelDevPerson->salary = $sessionPerson->salary;
                             ?>            
                             <tr>
-                                <td><?= ( ++$index) ?></td>
+                                <td><?= ( ++$index) ?>
+                                <?= $form->field($modelDevPerson,  "[{$key}]edoc_id")->hiddenInput()->label(false)->hint(false) ?>
+                                <?= $form->field($modelDevPerson, "[{$key}]user_id")->hiddenInput()->hint(false)->label(false) ?>
+                                </td>
                                 
                                 <td >
-                                  <?= $form->field($modelDevPerson,  "[{$key}]edoc_id")->hiddenInput()->label(false)->hint(false) ?>
+                                  
                                     <?= $sessionPerson->fullname ?>
-                                    <?= $form->field($modelDevPerson, "[{$key}]user_id")->hiddenInput()->hint(false)->label(false) ?>
+                                    
                                 </td>
-                                <td>                                    
+                                <td>      
+                                    <?=$modelPerson->positionTitle?>
                                     <?=
-                                    $form->field($modelDevPerson, "[{$key}]position_id", ['showLabels' => false])->widget(Select2::className(), [
+                                    $form->field($modelDevPerson, "[{$key}]position_id", ['showLabels' => false])
+                                    ->widget(Select2::className(), [
                                         //'name' => 'dev_activity_char_id',
-                                        //'value' => [1,2,3],
-                                        'data' => Position::getList(),
+                                        'value' => $modelDevPerson->position_id,
+                                        'data' => Position::getListTitle(),
                                         'options' => [
-                                      'placeholder' => 'เลือก..', 
+                                        'placeholder' => 'เลือก..', 
                                       //'multiple' => true
                                     ],
                                         'pluginOptions' => [
@@ -154,10 +172,17 @@ Modal::end();
 
                                 </td>
                               <td>
-                                 <?= $form->field($modelDevPerson, "[{$key}]level")->textInput()->hint(false)->label(false) ?>
+                                  <?=$modelPerson->positionSalary->level?>
+                                 <?= $form->field($modelDevPerson, "[{$key}]level")->textInput(['value'=>$modelPerson->positionSalary->level])->hint(false)->label(false) ?>
                               </td>
                               <td>
+                                  <?=$modelPerson->positionSalary->salary?>
                                  <?= $form->field($modelDevPerson, "[{$key}]salary")->textInput()->hint(false)->label(false) ?>
+                              </td>
+                              
+                              <td>
+                                  <?=$modelPerson->positionSalary->step?>
+                                 <?= $form->field($modelDevPerson, "[{$key}]step")->textInput()->hint(false)->label(false) ?>
                               </td>
                                 
                                
@@ -206,9 +231,10 @@ echo yii\grid\GridView::widget([
     'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
-            'label' => (new Person)->getAttributeLabel('user_id'),
-            'value' => 'fullname'
-        ],
+                'label' => (new PersonPosition)->getAttributeLabel('user_id'),
+                'value' => 'fullname',
+                'format'=>'html'
+            ],
             [
             'label' => 'เลือก',
             'content' => function($model) {
@@ -233,10 +259,10 @@ $js[] = '
           $.pjax.reload({container:"#pjax_grid_person"});  //Reload GridView    
       });  
       
-      $(document).on("click",".btn_del",function(){
-          alert(555);
-          $.pjax.reload({container:"#pjax_add_person"});  //Reload GridView
-      });
+    //   $(document).on("click",".btn_del",function(){
+    //       alert(555);
+    //       $.pjax.reload({container:"#pjax_add_person"});  //Reload GridView
+    //   });
  
   
  ';

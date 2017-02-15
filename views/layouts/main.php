@@ -15,20 +15,22 @@ $module = $this->context->module->id;
 
 ?>
 
-<?php /*
+
 <div class="row hidden-print">
     <div class="col-md-12"> 
       
       <?php
-      $menuItems = [];
+    $menuItems = [];
     $menuItems[] =  [
-           'label' => '<i class="fa fa-sitemap"></i> ' . Yii::t('andahrm/position-salary', 'Person Position Salaries'),
+           'label' => Yii::t('andahrm/position-salary', 'Person Position Salaries'),
             'url' => ["/{$module}/default/"],
+            'icon' => 'fa fa-sitemap',
      ];
 
     $menuItems[] =  [
-            'label' => Html::icon('inbox') . ' ' . Yii::t('andahrm/position-salary',  'Calculator'),
-            'url' => ["/{$module}/calculator/"],
+            'label' => Yii::t('andahrm/position-salary',  'Assessments'),
+            'url' => ["/{$module}/assessment/"],
+            'icon' => 'fa fa-sitemap',
      ];
      
     $menuItems = Helper::filter($menuItems);
@@ -55,7 +57,7 @@ $module = $this->context->module->id;
     </div>
 </div>
 
-*/ ?>
+
 
 
 <div class="row">

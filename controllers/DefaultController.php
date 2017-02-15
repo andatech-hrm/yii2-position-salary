@@ -60,7 +60,7 @@ class DefaultController extends Controller
      */
     public function actionView($edoc_id)
     {
-        $modelEdoc = Edoc::find()->where($edoc_id)->one();      
+        $modelEdoc = Edoc::find()->where(['id'=>$edoc_id])->one();      
         $searchModel = new PersonPositionSalarySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->where(['edoc_id' => $edoc_id]);
@@ -101,13 +101,13 @@ class DefaultController extends Controller
           $post = Yii::$app->request->post();
          
            if(isset($post['PersonPositionSalary'])){
-//              echo "<pre>";
-//            print_r($post);
+        //      echo "<pre>";
+        //     print_r($post);
            
-           //exit();
+        //   exit();
           $flag=true;
              PersonPositionSalary::deleteAll(['edoc_id'=>$modelEdoc->id]);
-             foreach($post['PersonPositionSalary'] as $item){
+             foreach($post['PersonPositionSalary'] as $key => $item){
 //                $newModel = PersonPositionSalary::find()->where(['edoc_id'=>$modelEdoc->id,'user_id'=>$item['user_id']])->one();
 //                if(!$newModel){
 //                  $newModel = new PersonPositionSalary();
@@ -115,7 +115,11 @@ class DefaultController extends Controller
 //                  $newModel->user_id = $item['user_id'];
 //                }               
                //$newModel->load($item);
+               if($key == 'status')
+               continue;
+               
                $newModel = new PersonPositionSalary();
+               $newModel->load($item);
                $newModel->edoc_id = $item['edoc_id'];
                $newModel->user_id = $item['user_id'];
                $newModel->title = $modelEdoc->title;               
@@ -216,7 +220,7 @@ class DefaultController extends Controller
     public function bindPerson($edoc_id,$mode = null, $user_id = null, $id = null) {
         $session = Yii::$app->session;
         //$id = $model->isNewRecord ? 'new' : $id;
-        $session->destroy('person_position');
+        //$session->destroy('person_position');
 //        echo "<pre>";
 //            print_r($session['person_position']);
 //            echo "</pre><hr/>";
@@ -261,13 +265,17 @@ class DefaultController extends Controller
 //        print_r($session['person_position']);
 //        echo "</pre><hr/>";
 //        exit();
+        
         if (isset($mode) && $mode == 'add') { # Event mode Add person
             $person = Person::findOne(['user_id' => $user_id]);
             $test = $session['person_position'];
             $test[$edoc_id][$user_id] = [
                 'user_id' => $user_id,
-                'fullname' => $person->fullname,
-                'position_id' => '',
+                'fullname' => $person->getInfoMedia('#',[
+                    'wrapper' => true,
+                    'wrapperTag' => 'div'
+                    ]),
+                'position_id' => $person->position->id,
                 'salary' => '',
                 'level' => '', 
             ];
@@ -279,7 +287,7 @@ class DefaultController extends Controller
             unset($del[$edoc_id][$user_id]);
             $session->set('person_position', $del);
         } elseif (isset($mode) && $mode == 'clear') {
-            //$session->destroy('person_position');
+            $session->destroy('person_position');
         }
         # Get Person All
         $person = Person::find()->orderBy('user_id')->all();
@@ -288,7 +296,10 @@ class DefaultController extends Controller
             $resPerson[$data->user_id] = [
                 'edoc_id' => $edoc_id,
                 'user_id' => $data->user_id,
-                'fullname' => $data->fullname,                
+                'fullname' => $data->getInfoMedia('#',[
+                    'wrapper' => true,
+                    'wrapperTag' => 'div'
+                    ]),                
                 'selected' => false
             ];
         }

@@ -19,8 +19,8 @@ class PersonPositionSalarySearch extends PersonPositionSalary
     {
         return [
             [['user_id', 'position_id', 'edoc_id', 'status', 'level', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
-            [['adjust_date', 'title', 'step'], 'safe'],
-            [['salary'], 'number'],
+            [['adjust_date', 'title', 'step', 'salary'], 'safe'],
+            // [['salary'], 'number'],
         ];
     }
 
@@ -69,7 +69,7 @@ class PersonPositionSalarySearch extends PersonPositionSalary
             'adjust_date' => $this->adjust_date,
             'status' => $this->status,
             'level' => $this->level,
-            'salary' => $this->salary,
+            // 'salary' => $this->salary,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
             'updated_at' => $this->updated_at,
@@ -78,7 +78,43 @@ class PersonPositionSalarySearch extends PersonPositionSalary
 
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'step', $this->step]);
+            
+        $query->andFilterWhere($this->getOperator('salary'));
 
         return $dataProvider;
+    }
+    
+    private function getOperator($attribute)
+    {
+        $qryString = $this->{$attribute};
+        if($qryString !== null){
+            switch ($qryString){
+                case strpos($qryString,'>=') === 0:
+                    $operator = '>='; 
+                    $val = intval(substr($qryString, 2));
+                break;
+                case strpos($qryString,'>') === 0:
+                    $operator = '>';
+                    $val = intval(substr($qryString, 1));
+                    break;
+                case strpos($qryString,'<=') === 0:
+                    $operator = '<=';
+                    $val = intval(substr($qryString, 2));
+                    break;
+                case strpos($qryString,'<') === 0:
+                    $operator = '<';
+                    $val = intval(substr($qryString, 1));
+                    break;
+                default:
+                    $operator =  'like';
+                    $val = $qryString;
+                    break;
+            }
+            
+            
+            return [$operator, $attribute, $val];
+        }
+        
+        return ['like', $attribute, null];
     }
 }
