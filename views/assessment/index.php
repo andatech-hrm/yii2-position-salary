@@ -26,8 +26,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'user_id',
-            'year',
+            
+            [
+                'attribute' => 'user_id',
+                'value' => 'user.fullname',
+            ],
+            [
+                'attribute' => 'year',
+                'value' => 'yearBuddhist',
+            ],
             'phase',
             'assessment',
             'percent',

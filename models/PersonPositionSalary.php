@@ -91,10 +91,10 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
             'step_adjust' => Yii::t('andahrm/position-salary', 'Step Total'), 
             'level' => Yii::t('andahrm/position-salary', 'Level'),
             'salary' => Yii::t('andahrm/position-salary', 'Salary'),
-            'created_at' => Yii::t('andahrm/position-salary', 'Created At'),
-            'created_by' => Yii::t('andahrm/position-salary', 'Created By'),
-            'updated_at' => Yii::t('andahrm/position-salary', 'Updated At'),
-            'updated_by' => Yii::t('andahrm/position-salary', 'Updated By'),
+            'created_at' => Yii::t('andahrm', 'Created At'),
+            'created_by' => Yii::t('andahrm', 'Created By'),
+            'updated_at' => Yii::t('andahrm', 'Updated At'),
+            'updated_by' => Yii::t('andahrm', 'Updated By'),
         ];
     }
     

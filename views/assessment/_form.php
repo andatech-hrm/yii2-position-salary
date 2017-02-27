@@ -17,7 +17,8 @@ use andahrm\structure\models\FiscalYear;
 
     <?= $form->field($model, 'user_id')->dropDownList(PersonPosition::getList(),[]) ?>
 
-    <?= $form->field($model, 'year')->dropDownList(FiscalYear::getList(),[]) ?>
+    <?php //echo $form->field($model, 'year')->dropDownList(FiscalYear::getList(),[]) ?>
+    <?php echo $form->field($model, 'year')->widget(\kuakling\datepicker\YearBuddhist::className()) ?>
 
     <?= $form->field($model, 'phase')->dropDownList([1=>1,2=>2],[]) ?>
 
@@ -28,7 +29,7 @@ use andahrm\structure\models\FiscalYear;
     <?= $form->field($model, 'level')->textInput() ?>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('andahrm/position-salary', 'Save'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('andahrm', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -3,9 +3,11 @@
 namespace andahrm\positionSalary\models;
 
 use Yii;
-
+use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
+use kuakling\datepicker\behaviors\YearBuddhistBehavior;
+use andahrm\setting\models\Helper;
 
 use andahrm\person\models\Person;
 /**
@@ -40,7 +42,7 @@ class Assessment extends \yii\db\ActiveRecord
         return [
             [['user_id', 'year', 'phase', 'assessment', 'percent', 'level'], 'required'],
             [['user_id', 'phase', 'assessment', 'level', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'integer'],
-            [['year'], 'safe'],
+            [['year', 'year_th'], 'safe'],
             [['percent'], 'number'],
         ];
     }
@@ -53,6 +55,10 @@ class Assessment extends \yii\db\ActiveRecord
             ],
             'blameable' => [
                 'class' => BlameableBehavior::className(),
+            ],
+            'year' => [
+                'class' => YearBuddhistBehavior::className(),
+                'attribute' => 'year',
             ],
         ];
     }
@@ -69,10 +75,11 @@ class Assessment extends \yii\db\ActiveRecord
             'assessment' => Yii::t('andahrm/position-salary', 'Assessment'),
             'percent' => Yii::t('andahrm/position-salary', 'Percent'),
             'level' => Yii::t('andahrm/position-salary', 'Level'),
-            'created_by' => Yii::t('andahrm/position-salary', 'Created By'),
-            'created_at' => Yii::t('andahrm/position-salary', 'Created At'),
-            'updated_by' => Yii::t('andahrm/position-salary', 'Updated By'),
-            'updated_at' => Yii::t('andahrm/position-salary', 'Updated At'),
+            'created_by' => Yii::t('andahrm', 'Created By'),
+            'created_at' => Yii::t('andahrm', 'Created At'),
+            'updated_by' => Yii::t('andahrm', 'Updated By'),
+            'updated_at' => Yii::t('andahrm', 'Updated At'),
+            'yearBuddhist' => Yii::t('andahrm/position-salary', 'Year Th'),
         ];
     }
     
@@ -82,6 +89,18 @@ class Assessment extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(Person::className(), ['user_id' => 'user_id']);
+    }
+    
+    // public function getYearTh()
+    // {
+    //     return (intval($this->year) + Helper::YEAR_TH_ADD);
+    // }
+    
+    
+    public function getYearBuddhist()
+    {
+        $yearDistance = $this->getBehavior('year')->yearDistance;
+        return (intval($this->year) + $yearDistance);
     }
     
 }

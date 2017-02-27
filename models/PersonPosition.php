@@ -6,6 +6,7 @@ use andahrm\leave\models\Leave; #mad
 use andahrm\leave\models\LeavePermission; #mad
 use andahrm\positionSalary\models\PersonPositionSalary; #mad
 use andahrm\leave\models\LeaveRelatedPerson; #mad
+use andahrm\leave\models\LeaveRelatedSection; #mad
 use yii\helpers\ArrayHelper;
 
 class PersonPosition extends \andahrm\person\models\Person
@@ -48,11 +49,15 @@ class PersonPosition extends \andahrm\person\models\Person
         return $this->positionSalary?$this->positionSalary->position->section->title:null;
     }
     
+     public function getSection()
+    {
+        return $this->positionSalary?$this->positionSalary->position->section:null;
+    }
+    
     
     public static function getList(){
         return ArrayHelper::map(self::find()->all(),'user_id','fullname');
     }
-    
     
   
 

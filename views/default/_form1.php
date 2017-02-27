@@ -35,17 +35,11 @@ use kartik\widgets\FileInput;
         <?= $form->field($modelEdoc, 'title')->textInput(['maxlength' => true]) ?>
       </div>
       <div class="col-sm-4">
-        <?php echo $form->field($modelEdoc, 'date_code')->widget(DatePicker::classname(), [              
-                    'pluginOptions' => [
-                        'todayHighlight' => true,
-                        'autoclose' => true,
-                        'daysOfWeekDisabled' => [0, 6],
-                        'format' => 'yyyy-mm-dd',
-
-                      //'startDate' => date('Y-m-d', strtotime("+3 day"))
-                    ]
-                ]);
-                ?>
+        <?php echo $form->field($model, 'date_code')->widget(DatePicker::classname(), [              
+          'options' => [
+            'daysOfWeekDisabled' => [0, 6],
+          ]
+        ]);?>
       </div>
     </div>
     
@@ -112,7 +106,7 @@ use kartik\widgets\FileInput;
                     
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('andahrm/position-salary', 'Create') : Yii::t('andahrm/position-salary', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('andahrm', 'Create') : Yii::t('andahrm', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

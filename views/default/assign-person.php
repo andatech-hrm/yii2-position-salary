@@ -8,7 +8,6 @@ use yii\widgets\DetailView;
 
 use yii\widgets\Pjax;
 use yii\bootstrap\Modal;
-use kartik\widgets\DatePicker;
 use kartik\widgets\FileInput;
 
 use andahrm\positionSalary\models\PersonPositionSalary;
@@ -19,7 +18,7 @@ use andahrm\structure\models\Position;
 /* @var $model andahrm\positionSalary\models\PersonPostionSalary */
 /* @var $form yii\widgets\ActiveForm */
 $this->title = Yii::t('andahrm/position-salary', 'Assign Person Position Salary');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Update'), 'url' => ['update-edoc','edoc_id'=>$edoc_id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm', 'Update'), 'url' => ['update-edoc','edoc_id'=>$edoc_id]];
 $this->params['breadcrumbs'][] = $this->title;
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -202,7 +201,7 @@ Modal::end();
                     
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('andahrm/position-salary', 'Create') : Yii::t('andahrm/position-salary', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('andahrm', 'Create') : Yii::t('andahrm', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

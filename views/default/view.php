@@ -9,7 +9,6 @@ use yii\grid\GridView;
 
 use yii\widgets\Pjax;
 use yii\bootstrap\Modal;
-use kartik\widgets\DatePicker;
 use kartik\widgets\FileInput;
 
 use andahrm\positionSalary\models\PersonPositionSalary;

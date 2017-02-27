@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use andahrm\positionSalary\models\Assessment;
+use andahrm\setting\models\Helper;
 
 /**
  * AssessmentSearch represents the model behind the search form of `andahrm\positionSalary\models\Assessment`.
@@ -19,7 +20,7 @@ class AssessmentSearch extends Assessment
     {
         return [
             [['user_id', 'phase', 'assessment', 'level', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'integer'],
-            [['year'], 'safe'],
+            [['year',], 'safe'],
             [['percent'], 'number'],
         ];
     }
@@ -61,7 +62,7 @@ class AssessmentSearch extends Assessment
         // grid filtering conditions
         $query->andFilterWhere([
             'user_id' => $this->user_id,
-            'year' => $this->year,
+            // 'year' => $this->year,
             'phase' => $this->phase,
             'assessment' => $this->assessment,
             'percent' => $this->percent,
@@ -71,6 +72,13 @@ class AssessmentSearch extends Assessment
             'updated_by' => $this->updated_by,
             'updated_at' => $this->updated_at,
         ]);
+        
+        if($this->year) {
+            $yearDistance = $this->getBehavior('year')->yearDistance;
+            $query->andFilterWhere([
+                'year' => (intval($this->year) - $yearDistance),
+            ]);
+        }
 
         return $dataProvider;
     }

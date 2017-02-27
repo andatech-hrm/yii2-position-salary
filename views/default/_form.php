@@ -7,7 +7,7 @@ use yii\widgets\ActiveForm;
 
 use yii\widgets\Pjax;
 use yii\bootstrap\Modal;
-use kartik\widgets\DatePicker;
+use kuakling\datepicker\DatePicker;
 use kartik\widgets\FileInput;
 use kartik\widgets\Typeahead
 
@@ -72,16 +72,10 @@ use kartik\widgets\Typeahead
       </div>
       <div class="col-sm-4">
         <?php echo $form->field($model, 'date_code')->widget(DatePicker::classname(), [              
-                    'pluginOptions' => [
-                        'todayHighlight' => true,
-                        'autoclose' => true,
-                        'daysOfWeekDisabled' => [0, 6],
-                        'format' => 'yyyy-mm-dd',
-
-                      //'startDate' => date('Y-m-d', strtotime("+3 day"))
-                    ]
-                ]);
-                ?>
+          'options' => [
+            'daysOfWeekDisabled' => [0, 6],
+          ]
+        ]);?>
       </div>
     </div>
     

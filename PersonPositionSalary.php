@@ -60,18 +60,18 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     {
         return [
             'user_id' => Yii::t('andahrm/position-salary', 'User ID'),
-            'adjust_date' => Yii::t('andahrm/position-salary', 'ลงวันที่'),
+            'adjust_date' => Yii::t('andahrm/position-salary', 'Adjust Date'),
             'title' => Yii::t('andahrm/position-salary', 'Title'),
             'status' => Yii::t('andahrm/position-salary', 'Status'),
             'step' => Yii::t('andahrm/position-salary', 'Step'),
-            'position_id' => Yii::t('andahrm/position-salary', 'Position ID'),
+            'position_id' => Yii::t('andahrm/position-salary', 'Position'),
             'level' => Yii::t('andahrm/position-salary', 'Level'),
-            'salary' => Yii::t('andahrm/position-salary', 'อัตราเงินเดือน'),
-            'edoc_id' => Yii::t('andahrm/position-salary', 'เอกสารอ้างอิง'),
-            'created_at' => Yii::t('andahrm/position-salary', 'Created At'),
-            'created_by' => Yii::t('andahrm/position-salary', 'Created By'),
-            'updated_at' => Yii::t('andahrm/position-salary', 'Updated At'),
-            'updated_by' => Yii::t('andahrm/position-salary', 'Updated By'),
+            'salary' => Yii::t('andahrm/position-salary', 'Salary'),
+            'edoc_id' => Yii::t('andahrm/position-salary', 'Edoc'),
+            'created_at' => Yii::t('andahrm', 'Created At'),
+            'created_by' => Yii::t('andahrm', 'Created By'),
+            'updated_at' => Yii::t('andahrm', 'Updated At'),
+            'updated_by' => Yii::t('andahrm', 'Updated By'),
         ];
     }
 
