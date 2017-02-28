@@ -69,6 +69,13 @@ $module = $this->context->module->id;
             </div>
             <div class="x_content">
                 <?php echo $content; ?>
+                
+                
+                <div class="alert alert-info alert-dismissible fade in" role="alert">
+                    <strong></strong>
+                    ระบบกำลังปรับปรุงเป็นรูปแบบ Wizard Form
+                </div>
+                
                 <div class="clearfix"></div>
             </div>
         </div>
