@@ -68,6 +68,16 @@ $module = $this->context->module->id;
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
+                
+                <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                    </button>
+                    <strong>ขออภัย ! </strong>
+                    ระบบกำลังปรับปรุงเป็นรูปแบบ Wizard Form
+                </div>
+                  
+                  
+                  
                 <?php echo $content; ?>
                 <div class="clearfix"></div>
             </div>

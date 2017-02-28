@@ -15,6 +15,8 @@ use andahrm\person\models\Person;
 use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
 
+use beastbytes\wizard\WizardBehavior;
+
 /**
  * DefaultController implements the CRUD actions for PersonPositionSalary model.
  */
@@ -33,6 +35,44 @@ class DefaultController extends Controller
                 ],
             ],
         ];
+    }
+    
+    
+     public function beforeAction($action)
+    {
+        $config = [];
+        switch ($action->id) {
+            case 'create':
+                $config = [
+                    'steps' => [
+                        Yii::t('andahrm/position-salary','Select Status') => 'topic', 
+                        Yii::t('andahrm/position-salary','Select Edoc') => 'edoc', 
+                        Yii::t('andahrm/position-salary','Select Person') => 'person', 
+                        Yii::t('andahrm/position-salary','Assign') => 'assign', 
+                        Yii::t('andahrm/position-salary','Confirm') => 'confirm',
+                        ],
+                    'events' => [
+                        WizardBehavior::EVENT_WIZARD_STEP => [$this, $action->id.'WizardStep'],
+                        WizardBehavior::EVENT_AFTER_WIZARD => [$this, $action->id.'AfterWizard'],
+                        WizardBehavior::EVENT_INVALID_STEP => [$this, 'invalidStep']
+                    ]
+                ];
+                break;
+           
+            case 'resume':
+                $config = ['steps' => []]; // force attachment of WizardBehavior
+                
+            default:
+                break;
+        }
+
+        if (!empty($config)) {
+            $config['class'] = WizardBehavior::className();
+            $config['sessionKey'] = 'Wizard-position-salary';
+            $this->attachBehavior('wizard', $config);
+        }
+
+        return parent::beforeAction($action);
     }
 
     /**
@@ -77,20 +117,20 @@ class DefaultController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        //$model = new PersonPositionSalary();
-        $model = new Edoc();
-        $model->scenario = 'insert';
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['assign-person', 'edoc_id' => $model->id]);
-        } 
-            return $this->render('create', [
-                'model' => $model,
-                //'modelEdoc'=> $modelEdoc
-            ]);
+    // public function actionCreate()
+    // {
+    //     //$model = new PersonPositionSalary();
+    //     $model = new Edoc();
+    //     $model->scenario = 'insert';
+    //     if ($model->load(Yii::$app->request->post()) && $model->save()) {
+    //         return $this->redirect(['assign-person', 'edoc_id' => $model->id]);
+    //     } 
+    //         return $this->render('create', [
+    //             'model' => $model,
+    //             //'modelEdoc'=> $modelEdoc
+    //         ]);
         
-    }
+    // }
   
   public function actionAssignPerson($edoc_id,$mode=null,$user_id=null)
     {
@@ -317,6 +357,164 @@ class DefaultController extends Controller
             ],
         ]);
         return $person;
+    }
+    
+    
+     ###########################################################
+    ###########################################################
+    ###########################################################
+    
+    public function actionCreate($step = null)
+    {
+        // print_r(Yii::$app->session);
+        // exit();
+        //if ($step===null) $this->resetWizard();
+        
+        if ($step=='reset') $this->resetWizard();
+        return $this->step($step);
+    }
+    
+    /**
+    * Process wizard steps.
+    * The event handler must set $event->handled=true for the wizard to continue
+    * @param WizardEvent The event
+    */
+    public function createWizardStep($event)
+    {
+        
+        
+        if (empty($event->stepData)) {
+            $modelName = '\andahrm\positionSalary\models\\'.ucfirst($event->step);
+            $model = new $modelName();
+            $model->scenario = 'insert';
+        } else {
+            $model = $event->stepData;
+        }
+
+        $post = Yii::$app->request->post();
+       
+        if (isset($post['cancel'])) {
+            $event->continue = false;
+        } elseif (isset($post['prev'])) {
+            $event->nextStep = WizardBehavior::DIRECTION_BACKWARD;
+            $event->handled  = true;
+        } elseif ($model->load($post) && $model->validate()) {
+            
+            
+            
+            $event->data    = $model;
+            $event->handled = true;
+
+            if (isset($post['pause'])) {
+                $event->continue = false;
+            } elseif ($event->n < 2 && isset($post['add'])) {
+                $event->nextStep = WizardBehavior::DIRECTION_REPEAT;
+            }
+            
+             if($post){
+                print_r($post);
+                //exit();
+            }
+        } else {
+            if($model->getErrors()){
+                // echo "DefaultController : ";
+                // print_r($model->getErrors());
+                //exit();
+            }
+                
+            $event->data = $this->render('wizard/'.$event->step, compact('event', 'model'));
+        }
+    }
+
+    /**
+    * @param WizardEvent The event
+    */
+    public function invalidStep($event)
+    {
+        $event->data = $this->render('wizard/invalidStep', compact('event'));
+        $event->continue = false;
+        return $this->redirect(['create']);
+    }
+
+    /**
+    * Registration wizard has ended; the reason can be determined by the
+    * step parameter: TRUE = wizard completed, FALSE = wizard did not start,
+    * <string> = the step the wizard stopped at
+    * @param WizardEvent The event
+    */
+    public function createAfterWizard($event)
+    {
+        if (is_string($event->step)) {
+            $uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+                mt_rand(0, 0xffff),
+                mt_rand(0, 0x0fff) | 0x4000,
+                mt_rand(0, 0x3fff) | 0x8000,
+                mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            );
+
+            $registrationDir = Yii::getAlias('@runtime/wizard/leave');
+            $registrationDirReady = true;
+            if (!file_exists($registrationDir)) {
+                if (!mkdir($registrationDir) || !chmod($registrationDir, 0775)) {
+                    $registrationDirReady = false;
+                }
+            }
+            if ($registrationDirReady && file_put_contents(
+                $registrationDir.DIRECTORY_SEPARATOR.$uuid,
+                $event->sender->pauseWizard()
+            )) {
+                $event->data = $this->render('wizard/paused', compact('uuid'));
+            } else {
+                $event->data = $this->render('wizard/notPaused');
+            }
+        } elseif ($event->step === null) {
+            $event->data = $this->render('wizard/cancelled');
+        } elseif ($event->step) {
+            
+            
+            
+            $model = $event->stepData['draft'][0];
+            $modelConfirm = $event->stepData['confirm'][0];
+            // print_r($model);
+            // exit();
+            if($model){
+                $model->status = 1;
+                if($model->save()){
+                    //print_r($model);
+                   // exit();
+                }else{
+                    
+                }
+                
+            }
+            
+            
+            $event->data = $this->render('wizard/complete', [
+                'data' => $event->stepData
+            ]);
+            //$event->continue = false;
+        } else {
+            
+            $event->data = $this->render('wizard/notStarted');
+        }
+    }
+
+    /**
+    * Method description
+    *
+    * @return mixed The return value
+    */
+    public function actionResume($uuid)
+    {
+        $registrationFile = Yii::getAlias('@runtime/wizard/leave').DIRECTORY_SEPARATOR.$uuid;
+        if (file_exists($registrationFile)) {
+            $this->resumeWizard(@file_get_contents($registrationFile));
+            unlink($registrationFile);
+            $this->redirect(['create']);
+        } else {
+            return $this->render('wizard/notResumed');
+        }
     }
   
 }
