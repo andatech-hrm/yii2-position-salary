@@ -36,7 +36,7 @@ class Person extends Model
         ];
     }
     
-    public $select_person;
+    //public $select_person;
     public $selection;
     public $section_id;
     public $percent;
@@ -49,7 +49,7 @@ class Person extends Model
      public function scenarios(){
           $scenarios = parent::scenarios();
           $scenarios['insert'] = [
-              'select_person',
+              'selection',
               'section_id',
               'person_type_id',
               'position_line_id',
@@ -59,8 +59,8 @@ class Person extends Model
     
     
     
-    public static function getPerson($event){
-        $data = $event->sender->read('topic')[0];
+    public static function getPerson($data){
+        //$data = $event->sender->read('topic')[0];
         // print_r($data);
         // exit();
         // $person_type_id = $data->person_type_id;

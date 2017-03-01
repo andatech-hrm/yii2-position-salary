@@ -14,6 +14,7 @@ use andahrm\structure\models\FiscalYear;
 use kartik\widgets\DepDrop;
 
 
+use yii\widgets\Pjax;
 
 //print_r($person);
  
@@ -30,6 +31,10 @@ $this->title = Yii::t('andahrm/position-salary', 'Select Person');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Person Position Salaries'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Create New'), 'url' => ['create','step'=>'reset']];
 $this->params['breadcrumbs'][] = $this->title;
+
+// echo "555";
+// print_r($model->selection);
+// echo "6555";
 ?>
 
 <?php echo WizardMenu::widget([
@@ -40,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);?>
 
 
-<?php $form = ActiveForm::begin(); ?>
+
 
 <div class="x_panel tile">
     <div class="x_title">
@@ -49,6 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="x_content">
         
+        <?php $form = ActiveForm::begin(); ?>
         
         <div class="row">
         
@@ -59,82 +65,97 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-4">
         <?= $form->field($model, 'person_type_id')->dropDownList(PersonType::getList(),[
           'prompt'=>Yii::t('app','Select'),
-          'id'=>'ddl-person_type',
+          //'id'=>'ddl-person_type',
         ]) ?>
       </div>
       
 
       <div class="col-sm-4">
         <?= $form->field($model, 'position_line_id')->widget(DepDrop::classname(), [
-            'options'=>['id'=>'ddl-position_type'],
-            'data'=> PositionLine::getListByPersonType($model->person_type_id),
+            'options'=>[
+                'prompt'=>Yii::t('app','Select'),
+            ],
+            
+            'data'=> PositionLine::getListByPersonType($model->person_type_id,$model->section_id),
             'pluginOptions'=>[
-                'depends'=>['ddl-person_type'],
+                'depends'=>['person-section_id', 'person-person_type_id'],
                 'placeholder'=>Yii::t('app','Select'),
                 'url'=>Url::to(['get-position-line'])
             ]
         ]); ?>
       </div>
       </div>
+      
+      
+      
+      <div class="row">
         
-        <?php
-        $selection = $model; #Global
-        echo yii\grid\GridView::widget([
-            'dataProvider' => Person::getPerson($event),
-            'columns' => [
-                ['class' => 'yii\grid\SerialColumn'],
-                [
-                    'class' => 'yii\grid\CheckboxColumn',
-                    'name' => 'Person[selection][]',
-                    'checkboxOptions' => function ($model, $key, $index, $column) use ($selection) {
-                        $checked =  $selection->selection&&in_array($model->user_id,$selection->selection)?'checked':null;
-                        return [
-                            'value' => $model->user_id,
-                            'checked' => $checked,
-                        ];
-                     }
-                ],
-                [
-                    'attribute'=>'user_id',
-                    'value'=>'user.fullname',
-                ],
-                
-                
-                [
-                    'attribute'=>'step',
-                    //'value'=> 'position.title',
-                ],
-                 [
-                    'attribute'=>'adjust_date',
-                    'format' => 'date'
-                ],
-                [
-                    'attribute'=>'salary',
-                    'format' => 'decimal',
-                    'contentOptions'=>['class'=>'text-right']
-                ],
-                [
-                    'attribute'=>'position_id',
-                    'format'=>'html',
-                    'value'=> function($model){
-                        return $model->position->title."<br/><small>".$model->position->code."</small>";
-                    }
-                ],
-                [
-                    'attribute'=>'edoc_id',
-                    'format'=>'html',
-                    'value'=> 'edoc.codeTitle'
-                ],
-            ]
-        ]);
-        ?>
+      <div class="col-sm-12 grid-view-area">
+      
+           <?php #echo Yii::$app->runAction("/position-salary/default/bind-person");?>
+       </div>
+      </div>
     
-        
      <?=$this->render('button',['event'=>$event]);?>
      
-     
+     <?php ActiveForm::end(); ?>
 
         <div class="clearfix"></div>
     </div>
 </div>
-<?php ActiveForm::end(); ?>
+
+
+<?php
+$js =[];
+$urlPerson = Url::to(['bind-person']);
+$selection = json_encode($model->selection);
+$js[] = <<< Js
+    
+    $(function(){
+        var selection='{$selection}';
+        var section_id=$('#person-section_id option:selected').val();
+        var person_type_id=$('#person-person_type_id option:selected').val();
+        var position_line_id=$('#person-position_line_id option:selected').val();
+        
+        bindPerson(selection,section_id,person_type_id,position_line_id);
+        
+        $('#person-section_id').change(function(){
+            section_id = $(this).find('option:selected').val();
+            bindPerson(selection,section_id,person_type_id,position_line_id);
+            console.log('person-section_id');
+        });
+        
+        $('#person-person_type_id').change(function(){
+            person_type_id = $(this).find('option:selected').val();
+            bindPerson(selection,section_id,person_type_id,position_line_id);
+            console.log('person-section_id');
+        });
+        
+         $('#person-position_line_id').change(function(){
+            position_line_id = $(this).find('option:selected').val();
+            bindPerson(selection,section_id,person_type_id,position_line_id);
+            console.log('person-position_line_id');
+        });
+        
+        
+    });
+    
+
+Js;
+$js[] = <<< Js
+    function bindPerson(selection,section_id,person_type_id,position_line_id){
+        $.get('{$urlPerson}',{
+            selection:selection,
+            section_id:section_id,
+            person_type_id:person_type_id,
+            position_line_id:position_line_id,
+        },function(data){
+            console.log(data);
+            $('.grid-view-area').html(data);
+        });
+    }
+Js;
+
+$this->registerJs(implode("\n",$js));
+
+

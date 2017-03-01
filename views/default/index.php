@@ -159,5 +159,3 @@ $(document).on('click', '#btn-reload-grid', function(e){
 ";
 
 $this->registerJs(implode("\n", $js));
-
-

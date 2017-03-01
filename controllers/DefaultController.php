@@ -3,6 +3,7 @@
 namespace andahrm\positionSalary\controllers;
 
 use Yii;
+use yii\data\ActiveDataProvider;
 use andahrm\positionSalary\models\PersonPositionSalary;
 use andahrm\positionSalary\models\PersonPositionSalarySearch;
 use yii\web\Controller;
@@ -16,6 +17,14 @@ use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
 
 use beastbytes\wizard\WizardBehavior;
+
+
+use yii\helpers\Json;
+use andahrm\structure\models\BaseSalary;
+use andahrm\structure\models\Structure;
+use andahrm\structure\models\FiscalYear;
+use andahrm\structure\models\PositionLine;
+use andahrm\structure\models\Position;
 
 /**
  * DefaultController implements the CRUD actions for PersonPositionSalary model.
@@ -45,8 +54,7 @@ class DefaultController extends Controller
             case 'create':
                 $config = [
                     'steps' => [
-                        Yii::t('andahrm/position-salary','Select Status') => 'topic', 
-                        Yii::t('andahrm/position-salary','Select Edoc') => 'edoc', 
+                        Yii::t('andahrm/position-salary','Topic') => 'topic', 
                         Yii::t('andahrm/position-salary','Select Person') => 'person', 
                         Yii::t('andahrm/position-salary','Assign') => 'assign', 
                         Yii::t('andahrm/position-salary','Confirm') => 'confirm',
@@ -88,6 +96,42 @@ class DefaultController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+        ]);
+    }
+    
+    public function actionBindPerson($selection=null,$section_id=null,$person_type_id=null,$position_line_id=null)
+    {
+        
+        $query = PersonPositionSalary::find()->joinWith('position', false, 'INNER JOIN')
+                 //->where(['position.section_id'=>$section_id])
+                 ->andFilterWhere(['position.section_id'=>$section_id])
+                 ->andFilterWhere(['position.person_type_id'=>$person_type_id])
+                 ->andFilterWhere(['position.position_line_id'=>$position_line_id])
+                ->groupBy([
+                    //'position.id',
+                    'user_id',
+                ])
+                ->orderBy(['position_id'=>SORT_ASC,'adjust_date'=>SORT_ASC]);
+                //print_r($query);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                //'pageSize' => 10,
+            ],
+            // 'sort' => [
+            //     'defaultOrder' => [
+            //         'created_at' => SORT_DESC,
+            //         'title' => SORT_ASC, 
+            //     ]
+            // ],
+        ]);
+        
+        $selection = $selection?json_decode($selection):'';
+        //print_r($selection);
+        return $this->renderPartial('bind-person', [
+            //'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'selection' => $selection
         ]);
     }
 
@@ -516,5 +560,72 @@ class DefaultController extends Controller
             return $this->render('wizard/notResumed');
         }
     }
+    
+    
+    ####################################################
+    ####################################################
+    #### Get Data Json
+    
+    
+    protected function MapData($datas,$fieldId,$fieldName){
+     $obj = [];
+     foreach ($datas as $key => $value) {
+         array_push($obj, ['id'=>$value->{$fieldId},'name'=>$value->{$fieldName}]);
+     }
+     return $obj;
+    }
+ 
+ ###############
+     public function actionGetPersonType() {
+     $out = [];
+      $post = Yii::$app->request->post();
+     if ($post['depdrop_parents']) {
+         $parents = $post['depdrop_parents'];
+         if ($parents != null) {
+             $section_id = $parents[0];
+             $out = $this->getPersonType($section_id);
+             echo Json::encode(['output'=>$out, 'selected'=>'']);
+             return;
+         }
+         }
+         echo Json::encode(['output'=>'', 'selected'=>'']);
+     }
+
+      protected function getPersonType($section_id){
+         $datas = Position::find()->where(['section_id'=>$section_id])->groupBy('person_type_id')->all();
+         return $this->MapData($datas,'person_type_id','personTypeTitle');
+     }
+ 
+ #############
+    public function actionGetPositionLine() {
+     $out = [];
+      $post = Yii::$app->request->post();
+     if (isset($post['depdrop_parents'])) {
+         $parents = $post['depdrop_parents'];
+         $section_id = null;
+         $person_type_id = null;
+         if (isset($parents) && $parents != null) {
+             $section_id = $parents[0];
+             if(isset($parents[1]))
+             $person_type_id = $parents[1];
+             
+             $out = $this->getPositionLine($section_id,$person_type_id);
+             echo Json::encode(['output'=>$out, 'selected'=>'']);
+             return;
+         }
+         }
+         echo Json::encode(['output'=>'', 'selected'=>'']);
+     }
+
+      protected function getPositionLine($section_id,$person_type_id=null){
+         $datas = PositionLine::find()
+         ->joinWith('position')->where([
+             'position.section_id'=>$section_id,
+             ])
+         ->andFilterWhere(['position.person_type_id'=>$person_type_id])
+         ->all();
+         return $this->MapData($datas,'id','title');
+     }
+     
   
 }

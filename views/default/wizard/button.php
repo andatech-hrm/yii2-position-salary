@@ -24,7 +24,8 @@ echo Html::beginTag('div', ['class' => 'btn-toolbar','role'=>'toolbar']);
          if($step_index >0){
             echo Html::submitButton('<i class="fa fa-pause"></i>  '.Yii::t('andahrm', 'Pause'), ['class' => 'btn btn-default', 'name' => 'pause', 'value' => 'pause']);
          }
-         echo Html::submitButton('<i class="fa fa-times"></i> '.Yii::t('andahrm', 'Cancel'), ['class' => 'btn btn-default', 'name' => 'cancel', 'value' => 'pause']);
+        //echo Html::submitButton('<i class="fa fa-times"></i> '.Yii::t('andahrm', 'Cancel'), ['class' => 'btn btn-default', 'name' => 'cancel', 'value' => 'pause']);
+         echo Html::a('<i class="fa fa-times"></i> '.Yii::t('andahrm', 'Cancel'),['index'], ['class' => 'btn btn-default', 'name' => 'cancel']);
      echo Html::endTag('div');
     
     
@@ -33,9 +34,9 @@ echo Html::beginTag('div', ['class' => 'btn-toolbar','role'=>'toolbar']);
 // }
     
     echo Html::beginTag('div', ['class' => 'btn-group pull-right','role'=>'group']);
-        //if($step_index>0){
+        if($step_index>0){
             echo Html::submitButton('<i class="fa fa-arrow-left "></i> '.Yii::t('andahrm', 'Prev'), ['class' => 'btn btn-primary', 'name' => 'prev', 'value' => 'prev' ]);
-        //}
+        }
         //else{
        //     echo Html::submitButton('<i class="fa fa-arrow-left "></i> Prev'.Yii::t('andahrm', 'Pause'), ['class' => 'btn btn-default', 'name' => 'prev', 'value' => 'prev','disabled'=>'disabled' ]);
        // }

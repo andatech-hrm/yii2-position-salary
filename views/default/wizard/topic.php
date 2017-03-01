@@ -17,13 +17,13 @@ use yii\web\JsExpression;
 use andahrm\setting\models\WidgetSettings;
 
 use andahrm\positionSalary\models\Topic;
-use andahrm\Edoc\models\Edoc;
+use andahrm\edoc\models\Edoc;
 use yii\helpers\Json;
 
 use kuakling\datepicker\DatePicker;
 
 
-$this->title = Yii::t('andahrm/position-salary', 'Select Status');
+$this->title = Yii::t('andahrm/position-salary', 'Topic');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Person Position Salaries'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Create New'), 'url' => ['create','step'=>'reset']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -53,26 +53,34 @@ Modal::end();
 <div class="x_panel tile">
     <div class="x_title">
         <h2><?= $this->title; ?></h2>
-        <?php if($model->hasErrors('leave_type_id')):?>
-        มีปัญหา
-        <?php endif;?>
         <div class="clearfix"></div>
     </div>
     <div class="x_content">
 
 
- <?php echo $form->field($model,'title')->textInput();?>
 
-<?php echo $form->field($model,'status')->radioList(Topic::getItemStatus())?>
-
-<?php echo $form->field($model,'adjust_date')->widget(DatePicker::classname(), [              
+<div class="row">
+    
+    <div class="col-sm-6">
+         <?php echo $form->field($model,'title')->textInput();?>
+    </div>
+    <div class="col-sm-3">
+        <?php echo $form->field($model,'adjust_date')->widget(DatePicker::classname(), [              
           'options' => [
             'daysOfWeekDisabled' => [0, 6],
           ]
         ]);?>
 
-
-
+    </div>
+</div>
+ 
+<div class="row">
+    
+    <div class="col-sm-6">
+        <?php echo $form->field($model,'status')->radioList(Topic::getItemStatus())?>
+     </div>
+</div>
+<hr/>
 
 
 <div class="row">
