@@ -56,6 +56,10 @@ $this->params['breadcrumbs'][] = $this->title;
         
         <?php $form = ActiveForm::begin(); ?>
         
+         <?php if($model->hasErrors()):
+         echo $form->errorSummary($model,['class'=>'alert alert-warning alert-dismissible fade in','role'=>'alert']); 
+           endif;?>
+        
         <div class="row">
         
       <div class="col-sm-4">

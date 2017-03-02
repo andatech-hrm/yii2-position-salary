@@ -14,6 +14,8 @@ use andahrm\structure\models\FiscalYear;
 
 use backend\widgets\WizardMenu;
 use andahrm\positionSalary\models\Assign;
+
+use andahrm\setting\models\Helper;
 /* @var $this yii\web\View */
 /* @var $model andahrm\leave\models\Leave */
 
@@ -24,11 +26,14 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/leave', 'Select Typ
 $this->params['breadcrumbs'][] = $this->title;
 
 //$modelSelect$modelSelect->leave_type_id;
-//print_r($modelSelect);
+
 
 $modelTopic= $event->sender->read('topic')[0];
 $modelPerson= $event->sender->read('person')[0];
 $modelAssign= $event->sender->read('assign')[0];
+
+ //print_r($modelTopic);
+// exit();
 ?>
 
 <?php echo WizardMenu::widget([
@@ -43,13 +48,41 @@ $modelAssign= $event->sender->read('assign')[0];
     <?php $form = ActiveForm::begin(); 
     //$model->status = 1;
     echo $form->field($model, 'status')->hiddenInput()->label(false);
+    ?>
     
+    <div class="row">
+    <div class="col-sm-6">
+    <?php
     echo DetailView::widget([
-        'model'=>$modelTopic
-        
-        
-        
+        'model'=>$modelTopic,
+        'template'=>'<tr><th class="text-right">{label}</th><td>{value}</td></tr>',
+        'attributes' => [
+            'title',
+            [
+                'attribute'=>'status',
+                'value'=>$modelTopic->statusLabel,
+                ],
+            [
+                'attribute'=>'edoc_id',
+                'format'=>'raw',
+                'value'=>function($model){
+                    return $model->edoc->title."<br/>".$model->edoc->code."<br/>"
+                    .Yii::$app->formatter->asDate($model->edoc->date_code);
+                }
+            ],
+             [
+                'attribute'=>'adjust_date',
+                'value'=>Helper::dateBuddhistFormatter($modelTopic->adjust_date),
+                ],
+            
+            
+         ],
         ]);
+        ?>
+    </div>       
+    </div>       
+        
+        <?php
     
   
   
@@ -62,42 +95,45 @@ $modelAssign= $event->sender->read('assign')[0];
                     //'format'=>'html',
                     //'value'=>'user.fullname',
                     'content'=> function($model) use ($form){
-                        return $model->user->fullname
-                        .$form->field($model,"user_id[{$model->user_id}]")->textInput(['value'=>$model->user_id]);
+                        return $model->user->fullname;
+                    },
+                ],
+                 [
+                    'attribute'=>'position_id',
+                    'format'=>'html',
+                    'content'=> function($model) use ($form){
+                        return $model->position->title."<br/><small>".$model->position->code."</small>";
                     },
                 ],
                 [
                     'attribute'=>'level',
                     'format'=>'html',
                     'content'=> function($model) use ($form){
-                        return $model->level
-                        .$form->field($model,"level[{$model->user_id}]")->textInput(['value'=>$model->level]);
+                        return $model->level;
                     },
                 ],
-                [
-                    'attribute'=>'position_id',
-                    'format'=>'html',
-                    'content'=> function($model) use ($form){
-                        return $model->position->title."<br/><small>".$model->position->code."</small>"
-                        .$form->field($model,"position_id[{$model->user_id}]")->textInput(['value'=>$model->position_id]);
-                    },
-                ],
+               
                 
                 [
                     'attribute'=>'step',
-                    'content'=> function($model) use ($form){
-                        return $form->field($model,"step[{$model->user_id}]")->textInput(['value'=>$model->step]);
-                    },
+                   
                 ],
                 
                 [
-                    'attribute'=>'salary',
+                    'attribute'=>'new_salary',
                     'format' => 'decimal',
                     'contentOptions'=>['class'=>'text-right'],
                     'content'=> function($model) use ($modelAssign){
-                        return $modelAssign->salary[$model->user_id];
+                        return $modelAssign->new_salary[$model->user_id];
                     },
                 ],
+                [
+                    'attribute'=>'edoc_id',
+                    'content'=>function($model) use ($modelTopic){
+                        return $modelTopic->edoc->title."<br/>".$modelTopic->edoc->code."<br/>"
+                        .Yii::$app->formatter->asDate($modelTopic->edoc->date_code);
+                    }
+                ]
                  
                 //  [
                 //     'attribute'=>'adjust_date',

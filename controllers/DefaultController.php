@@ -460,11 +460,11 @@ class DefaultController extends Controller
                 //exit();
             }
         } else {
-            if($model->hasErrors()){
-                echo "DefaultController : ";
-                print_r($model->getErrors());
-                exit();
-            }
+            // if($model->hasErrors()){
+            //     echo "DefaultController : ";
+            //     print_r($model->getErrors());
+            //     //exit();
+            // }
                 
             $event->data = $this->render('wizard/'.$event->step, compact('event', 'model'));
         }
@@ -518,26 +518,51 @@ class DefaultController extends Controller
             
             
             
-            // $model = $event->stepData['draft'][0];
-            // $modelConfirm = $event->stepData['confirm'][0];
-            // // print_r($model);
-            // // exit();
-            // if($model){
-            //     $model->status = 1;
-            //     if($model->save()){
-            //         //print_r($model);
-            //       // exit();
-            //     }else{
-                    
-            //     }
+            $modelTopic = $event->stepData['topic'][0];
+            $modelPerson= $event->stepData['person'][0];
+            $modelAssign = $event->stepData['assign'][0];
+             //print_r($modelTopic);
+            // exit();
+            $flag = false;
+            $err=[];
+            if(isset($modelTopic) && isset($modelPerson) && isset($modelAssign) ){
                 
-            // }
-            
-            
-            $event->data = $this->render('wizard/complete', [
-                'data' => $event->stepData
-            ]);
-            //$event->continue = false;
+                //  print_r($modelAssign->scenario);
+                //  exit();
+                foreach ($modelPerson->selection as $key => $user_id) {
+                    $modelPersonPositionSalary = new PersonPositionSalary(['scenario'=>$modelAssign->scenario]);
+                    $modelPersonPositionSalary->user_id = $modelAssign->user_id[$user_id];
+                    $modelPersonPositionSalary->position_id = $modelAssign->new_position_id[$user_id]?$modelAssign->new_position_id[$user_id]:$modelAssign->position_id[$user_id];
+                    $modelPersonPositionSalary->edoc_id = $modelTopic->edoc_id;
+                    $modelPersonPositionSalary->title = $modelTopic->title;
+                    $modelPersonPositionSalary->status = $modelTopic->status;
+                    $modelPersonPositionSalary->level = $modelAssign->new_level[$user_id]?$modelAssign->new_level[$user_id]:$modelAssign->level[$user_id];
+                    $modelPersonPositionSalary->step = $modelAssign->new_step[$user_id]?$modelAssign->new_step[$user_id]:$modelAssign->step[$user_id];
+                    $modelPersonPositionSalary->step_adjust = $modelAssign->step_adjust[$user_id];
+                    $modelPersonPositionSalary->salary = $modelAssign->new_salary[$user_id]?$modelAssign->new_salary[$user_id]:$modelAssign->salary[$user_id];
+                    $modelPersonPositionSalary->adjust_date = $modelTopic->adjust_date;
+                    
+                   if (($flag = $modelPersonPositionSalary->save()) === false) {
+                       $err[] = $modelPersonPositionSalary->getErrors();
+                    }
+                }
+                
+                //exit();
+                
+                
+               if($flag){
+                  $event->data = $this->render('wizard/complete', [
+                    'data' => $event->stepData
+                    ]);
+               }else{
+                   echo $flag;
+                   echo "save";
+                   print_r($err);
+                   //exit();
+                //$event->continue = false;
+               }
+                
+            }
         } else {
             
             $event->data = $this->render('wizard/notStarted');

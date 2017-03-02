@@ -26,6 +26,12 @@ $module = $this->context->module->id;
             'url' => ["/{$module}/default/"],
             'icon' => 'fa fa-sitemap',
      ];
+     
+     $menuItems[] =  [
+            'label' => Yii::t('andahrm/position-salary',  'Person Contracts'),
+            'url' => ["/{$module}/contract/"],
+            'icon' => 'fa fa-sitemap',
+     ];
 
     $menuItems[] =  [
             'label' => Yii::t('andahrm/position-salary',  'Assessments'),
@@ -69,12 +75,12 @@ $module = $this->context->module->id;
             </div>
             <div class="x_content">
                 
-                <div class="alert alert-warning alert-dismissible fade in" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-                    </button>
-                    <strong>ขออภัย ! </strong>
-                    ระบบกำลังปรับปรุงเป็นรูปแบบ Wizard Form
-                </div>
+                <!--<div class="alert alert-warning alert-dismissible fade in" role="alert">-->
+                <!--    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>-->
+                <!--    </button>-->
+                <!--    <strong>ขออภัย ! </strong>-->
+                <!--    ระบบกำลังปรับปรุงเป็นรูปแบบ Wizard Form-->
+                <!--</div>-->
                   
                   
                   

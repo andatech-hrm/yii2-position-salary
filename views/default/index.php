@@ -61,19 +61,19 @@ $columns = [
   'title'=>'title',
   'salary'=>'salary:decimal',
   'step'=>'step',
+  'level'=>'level',
 ];
 
 $gridColumns = [
    ['class' => '\kartik\grid\SerialColumn'],
    $columns['adjust_date'],
     $columns['user_id'], 
-    $columns['position_id'],   
     $columns['title'],
-    $columns['status'],
+    $columns['position_id'],   
+    $columns['level'], 
+    //$columns['status'],
     $columns['salary'],
-    $columns['step'],
     $columns['edoc_id'],   
-    
     ['class' => '\kartik\grid\ActionColumn',
     'template' => '{view} {delete}',
     ]

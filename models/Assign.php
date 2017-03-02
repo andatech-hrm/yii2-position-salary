@@ -28,7 +28,7 @@ class Assign extends PersonPositionSalary
     public function rules()
     {
         return [
-            [['user_id', 'position_id', 'level', 'salary','step'], 'required'],
+            [['user_id', 'new_position_id', 'new_level', 'new_salary','new_step'], 'required'],
             // [['user_id', 'position_id', 'edoc_id', 'status', 'level', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             // [['adjust_date'], 'safe'],
             // [['step_adjust', 'salary','step'], 'number'],
@@ -37,23 +37,14 @@ class Assign extends PersonPositionSalary
         ];
     }
     
-    public $new_level;
-    public $new_salary;
-    public $new_position_id;
     
-     public function scenarios(){
-          $scenarios = parent::scenarios();
-          $scenarios['insert'] = [
-             'user_id', 'step' ,'salary', 'position_id', 'step_adjust', 'level',
-              ];
-          return $scenarios;
-    }
     
     public function attributeLabels()
     {
         $label = parent::attributeLabels();
         $newLabel = [];
         $newLabel = [
+            'new_step' => Yii::t('andahrm/position-salary', 'New Step'),
             'new_level' => Yii::t('andahrm/position-salary', 'New Level'),
             'new_salary' => Yii::t('andahrm/position-salary', 'New Salary'),
             'new_position_id' => Yii::t('andahrm/position-salary', 'New Position'),
@@ -62,7 +53,7 @@ class Assign extends PersonPositionSalary
     }
     
     
-    
+  
     
     
     public static function getPerson($data){
@@ -106,13 +97,23 @@ class Assign extends PersonPositionSalary
     
     
     
-    // public function beforeValidate()
-    // {
-    //      if (parent::beforeValidate()) {
-    //         //  print_r(Yii::$app->request->post());
-    //         // exit();
-    //         return true;
-    //     }
-    //     return false;
-    // }
+    public function beforeValidate()
+    {
+        //echo $this->status;
+        switch($this->status){
+            case 2:
+                $this->scenario = 'status2';
+                break;
+        }
+        //echo $this->scenario;
+        
+         if (parent::beforeValidate()) {
+            //  print_r(Yii::$app->request->post());
+            // exit();
+            return true;
+        }
+        return false;
+    }
+    
+    
 }

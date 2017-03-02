@@ -11,6 +11,9 @@ use yii\helpers\ArrayHelper;
 use andahrm\person\models\Person;
 use andahrm\edoc\models\Edoc;
 use andahrm\structure\models\Position;
+
+use kuakling\datepicker\behaviors\DateBuddhistBehavior;
+use kuakling\datepicker\behaviors\YearBuddhistBehavior;
 /**
  * This is the model class for table "person_position_salary".
  *
@@ -45,14 +48,19 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
   /**
      * @inheritdoc
      */
-    function behaviors()
+     function behaviors()
     {
+        
         return [
             [
                 'class' => BlameableBehavior::className(),
             ],
             [
                 'class' => TimestampBehavior::className(),
+            ],
+            'adjust_date' => [
+                'class' => DateBuddhistBehavior::className(),
+                'dateAttribute' => 'adjust_date',
             ],
         ];
     }
@@ -98,6 +106,11 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
         ];
     }
     
+    public $new_level;
+    public $new_salary;
+    public $new_step;
+    public $new_position_id;
+    
     public function scenarios(){
       $scenarios = parent::scenarios();
       
@@ -108,6 +121,17 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
               'salary', 
               'user_id', 
               'level'
+          ];
+          
+      $scenarios['insert'] = [
+         'status',
+         'user_id' ,'salary', 'position_id', 'step_adjust', 'level',
+         'new_level', 'new_salary', 'new_position_id'
+          ];
+      $scenarios['status2'] = [
+         'status',
+         'user_id' ,'salary', 'position_id','step_adjust', 'level',
+         'new_level', 'new_salary'
           ];
       
       return $scenarios;
@@ -171,6 +195,11 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     public function getAssessment()
     {
         return $this->hasOne(Assessment::className(), ['user_id' => 'user_id']);
+    }
+    
+    public static function getRangeStep(){
+        $range = range(0.5,2,0.5);
+        return array_combine($range,$range);
     }
     
 }

@@ -24,6 +24,7 @@ $modelSelect = $event->sender->read('person')[0];
 $status = $modelTopic->status;
 //$modelSelect$modelSelect->leave_type_id;
 //print_r($modelTopic->status);
+//echo $model->scenario;
 ?>
 
 <?php echo WizardMenu::widget([
@@ -36,7 +37,10 @@ $status = $modelTopic->status;
 <div class="row">
     <div class="col-sm-12">
        
-        <?php $form = ActiveForm::begin(); ?>
+        <?php $form = ActiveForm::begin(); 
+        echo $form->field($model,'status')->hiddenInput(['value'=>$modelTopic->status])->label(false);
+        
+        ?>
 
             <div class="x_panel tile">
             <div class="x_title">
@@ -44,14 +48,14 @@ $status = $modelTopic->status;
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-            <?php 
-                  if($model->hasErrors()):?>
-                    <div class="alert alert-warning alert-dismissible fade in" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-                        </button>
-                        <strong>คำเดือน</strong> พบข้อผิดพลาด
-                    </div>
-                  <?php  endif;?>
+            <?php if($model->hasErrors()):?>
+                    <!--<div class="alert alert-warning alert-dismissible fade in" role="alert">-->
+                    <!--    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>-->
+                    <!--    </button>-->
+                    <!--    <strong>คำเดือน</strong> พบข้อผิดพลาด-->
+                    <!--</div>-->
+                     <?= $form->errorSummary($model,['class'=>'alert alert-warning alert-dismissible fade in','role'=>'alert']); ?>
+            <?php  endif;?>
               
              
              
