@@ -1,8 +1,9 @@
 <?php
 
-namespace andahrm\insignia\models;
+namespace andahrm\positionSalary\models;
 
 use Yii;
+use yii\base\Model;
 
 /**
  * This is the model class for table "insignia_request".
@@ -25,7 +26,7 @@ use Yii;
  * @property InsigniaPerson[] $insigniaPeople0
  * @property InsigniaType $insigniaType
  */
-class Confirm extends InsigniaRequest
+class Confirm extends Model
 {
     public function rules()
     {
@@ -34,6 +35,7 @@ class Confirm extends InsigniaRequest
         ];
     }
     
+    public $status;
     
     
      public function scenarios(){

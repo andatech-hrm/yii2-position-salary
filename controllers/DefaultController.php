@@ -460,10 +460,10 @@ class DefaultController extends Controller
                 //exit();
             }
         } else {
-            if($model->getErrors()){
-                // echo "DefaultController : ";
-                // print_r($model->getErrors());
-                //exit();
+            if($model->hasErrors()){
+                echo "DefaultController : ";
+                print_r($model->getErrors());
+                exit();
             }
                 
             $event->data = $this->render('wizard/'.$event->step, compact('event', 'model'));
@@ -497,7 +497,7 @@ class DefaultController extends Controller
                 mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
             );
 
-            $registrationDir = Yii::getAlias('@runtime/wizard/leave');
+            $registrationDir = Yii::getAlias('@runtime/wizard/position-salary');
             $registrationDirReady = true;
             if (!file_exists($registrationDir)) {
                 if (!mkdir($registrationDir) || !chmod($registrationDir, 0775)) {
@@ -518,20 +518,20 @@ class DefaultController extends Controller
             
             
             
-            $model = $event->stepData['draft'][0];
-            $modelConfirm = $event->stepData['confirm'][0];
-            // print_r($model);
-            // exit();
-            if($model){
-                $model->status = 1;
-                if($model->save()){
-                    //print_r($model);
-                   // exit();
-                }else{
+            // $model = $event->stepData['draft'][0];
+            // $modelConfirm = $event->stepData['confirm'][0];
+            // // print_r($model);
+            // // exit();
+            // if($model){
+            //     $model->status = 1;
+            //     if($model->save()){
+            //         //print_r($model);
+            //       // exit();
+            //     }else{
                     
-                }
+            //     }
                 
-            }
+            // }
             
             
             $event->data = $this->render('wizard/complete', [

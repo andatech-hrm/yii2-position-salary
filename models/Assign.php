@@ -28,59 +28,37 @@ class Assign extends PersonPositionSalary
     public function rules()
     {
         return [
-            // [['user_id', 'position_level_id', 'position_current_date', 'salary', 'position_id', 'insignia_type_id'], 'required'],
-            // [['insignia_request_id', 'user_id', 'position_level_id', 'position_id', 'insignia_request_id_last', 'insignia_type_id'], 'integer'],
-            // [['position_current_date'], 'safe'],
-            // [['salary'], 'number'],
-            // [['feat', 'note'], 'string', 'max' => 300],
-            // [['insignia_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => InsigniaType::className(), 'targetAttribute' => ['insignia_type_id' => 'id']],
-            // [['insignia_request_id'], 'exist', 'skipOnError' => true, 'targetClass' => InsigniaRequest::className(), 'targetAttribute' => ['insignia_request_id' => 'id']],
-            // [['insignia_request_id_last'], 'exist', 'skipOnError' => true, 'targetClass' => InsigniaRequest::className(), 'targetAttribute' => ['insignia_request_id_last' => 'id']],
+            [['user_id', 'position_id', 'level', 'salary','step'], 'required'],
+            // [['user_id', 'position_id', 'edoc_id', 'status', 'level', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
+            // [['adjust_date'], 'safe'],
+            // [['step_adjust', 'salary','step'], 'number'],
+            // [['title'], 'string', 'max' => 255],
+          
         ];
     }
     
-    public $insignia_type_id;
-    public $insignia_request_id;
-    public $current_insignia_request_id;
-    public $current_position_id;
-    public $current_salary;
-    public $current_step;
-    public $current_adjust_date;
-    public $note;
+    public $new_level;
+    public $new_salary;
+    public $new_position_id;
     
      public function scenarios(){
           $scenarios = parent::scenarios();
           $scenarios['insert'] = [
-              'current_step',
-              'current_adjust_date',
-              'current_salary', 
-              'current_position_id',
-              //'current_insignia_type_id',
-              'current_insignia_request_id',
-              'note',
-              'insignia_type_id',
-              //'insignia_request_id'
+             'user_id', 'step' ,'salary', 'position_id', 'step_adjust', 'level',
               ];
           return $scenarios;
     }
     
     public function attributeLabels()
     {
-        return [
-            'insignia_request_id' => Yii::t('andahrm/insignia', 'Insignia Request'),
-            'user_id' => Yii::t('andahrm/insignia', 'Person'),
-            'position_level_id' => Yii::t('andahrm/insignia', 'Position Level'),
-            'step' => Yii::t('andahrm/insignia', 'Step'),
-            'last_step' => Yii::t('andahrm/insignia', 'Step'),
-            'adjust_date' => Yii::t('andahrm/insignia', 'Last Date'),
-            'position_current_date' => Yii::t('andahrm/insignia', 'Last Date'),
-            'salary' => Yii::t('andahrm/insignia', 'Salary'),
-            'position_id' => Yii::t('andahrm/insignia', 'Last Position'),
-            'insignia_request_id_last' => Yii::t('andahrm/insignia', 'Get Last Insignia'),
-            'insignia_type_id' => Yii::t('andahrm/insignia', 'This request'),
-            'feat' => Yii::t('andahrm/insignia', 'Feat'),
-            'note' => Yii::t('andahrm/insignia', 'Note'),
+        $label = parent::attributeLabels();
+        $newLabel = [];
+        $newLabel = [
+            'new_level' => Yii::t('andahrm/position-salary', 'New Level'),
+            'new_salary' => Yii::t('andahrm/position-salary', 'New Salary'),
+            'new_position_id' => Yii::t('andahrm/position-salary', 'New Position'),
         ];
+        return array_merge($label,$newLabel);
     }
     
     
@@ -97,7 +75,7 @@ class Assign extends PersonPositionSalary
        // $year = $data->year;
        
       
-        $query = PersonPositionSalary::find()->joinWith('position')
+        $query = self::find()->joinWith('position')
                 //->where(['year'=>$year])
                  ->andFilterWhere(['user_id'=>$data->selection])
                 // ->andFilterWhere(['position.id'=>$position_id])

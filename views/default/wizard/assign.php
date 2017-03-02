@@ -44,7 +44,14 @@ $status = $modelTopic->status;
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-            
+            <?php 
+                  if($model->hasErrors()):?>
+                    <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                        </button>
+                        <strong>คำเดือน</strong> พบข้อผิดพลาด
+                    </div>
+                  <?php  endif;?>
               
              
              
