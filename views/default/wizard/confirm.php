@@ -14,15 +14,15 @@ use andahrm\structure\models\FiscalYear;
 
 use backend\widgets\WizardMenu;
 use andahrm\positionSalary\models\Assign;
+use andahrm\positionSalary\models\Confirm;
 
 use andahrm\setting\models\Helper;
 /* @var $this yii\web\View */
 /* @var $model andahrm\leave\models\Leave */
 
 $this->title = Yii::t('andahrm/leave', 'Confirm Form');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/leave', 'Leaves'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/leave', 'Create New'), 'url' => ['create','step'=>'reset']];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/leave', 'Select Type'), 'url' => ['create','step'=>'select']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Person Position Salaries'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Create New'), 'url' => ['create','step'=>'reset']];
 $this->params['breadcrumbs'][] = $this->title;
 
 //$modelSelect$modelSelect->leave_type_id;
@@ -32,7 +32,8 @@ $modelTopic= $event->sender->read('topic')[0];
 $modelPerson= $event->sender->read('person')[0];
 $modelAssign= $event->sender->read('assign')[0];
 
- //print_r($modelTopic);
+// echo "<pre>";
+//  print_r($modelAssign);
 // exit();
 ?>
 
@@ -106,25 +107,29 @@ $modelAssign= $event->sender->read('assign')[0];
                     },
                 ],
                 [
+                    'attribute'=>'step_adjust',
+                    'contentOptions'=>['class'=>'text-right'],
+                    'content'=> function($model) use ($modelAssign){
+                        return $modelAssign->step_adjust[$model->user_id]?$modelAssign->step_adjust[$model->user_id]:0;
+                    },
+                ],
+                [
                     'attribute'=>'level',
+                    'contentOptions'=>['class'=>'text-right'],
                     'format'=>'html',
-                    'content'=> function($model) use ($form){
-                        return $model->level;
+                    'content'=> function($model) use ($modelAssign){
+                        return Confirm::Tobe($modelAssign->level[$model->user_id],$modelAssign->new_level[$model->user_id]);
                     },
                 ],
                
+               
                 
                 [
-                    'attribute'=>'step',
-                   
-                ],
-                
-                [
-                    'attribute'=>'new_salary',
-                    'format' => 'decimal',
+                    'attribute'=>'salary',
                     'contentOptions'=>['class'=>'text-right'],
+                    'format'=>'raw',
                     'content'=> function($model) use ($modelAssign){
-                        return $modelAssign->new_salary[$model->user_id];
+                        return Confirm::Tobe($modelAssign->salary[$model->user_id],$modelAssign->new_salary[$model->user_id]);
                     },
                 ],
                 [

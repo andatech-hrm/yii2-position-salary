@@ -44,7 +44,7 @@ $status = $modelTopic->status;
 
             <div class="x_panel tile">
             <div class="x_title">
-                <h2><?= Yii::t('andahrm/position-salary', 'Select Person'); ?></h2>
+                <h2><?= $this->title; ?></h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">

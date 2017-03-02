@@ -32,6 +32,7 @@ use yii\widgets\Pjax;
                         $checked=null;
                         $checked =  $selection&&in_array($model->user_id,$selection)?'checked':null;
                         return [
+                            'id'=>'checkbox'.$model->user_id,
                             'value' => $model->user_id,
                             'checked' => $checked,
                         ];
@@ -39,30 +40,33 @@ use yii\widgets\Pjax;
                 ],
                 [
                     'attribute'=>'user_id',
-                    'value'=>'user.fullname',
+                    'format'=>'raw',
+                    'value'=>function($model){
+                        return Html::label($model->user->fullname,'checkbox'.$model->user_id);
+                    }
                 ],
-                
-                
-                [
-                    'attribute'=>'step',
-                    //'value'=> 'position.title',
-                ],
-                 [
-                    'attribute'=>'adjust_date',
-                    'format' => 'date'
-                ],
-                [
-                    'attribute'=>'salary',
-                    'format' => 'decimal',
-                    'contentOptions'=>['class'=>'text-right']
-                ],
-                [
+                  [
                     'attribute'=>'position_id',
                     'format'=>'html',
                     'value'=> function($model){
                         return $model->position->title."<br/><small>".$model->position->code."</small>";
                     }
                 ],
+                 [
+                    'attribute'=>'adjust_date',
+                    'format' => 'date'
+                ],
+                [
+                    'attribute'=>'level',
+                    //'value'=> 'position.title',
+                ],
+                
+                [
+                    'attribute'=>'salary',
+                    'format' => 'decimal',
+                    'contentOptions'=>['class'=>'text-right']
+                ],
+              
                 [
                     'attribute'=>'edoc_id',
                     'format'=>'html',

@@ -50,7 +50,7 @@ $modelSelect = $event->sender->read('person')[0];
                     'contentOptions'=>['class'=>'text-right'],
                     'content'=> function($model) use ($form){
                         return $model->level
-                        .$form->field($model,"level[{$model->user_id}]")->hiddenInput(['level'=>$model->user_id])->label(false);
+                        .$form->field($model,"level[{$model->user_id}]")->hiddenInput(['value'=>$model->level])->label(false);
                     },
                 ],
                 [
@@ -88,7 +88,7 @@ $modelSelect = $event->sender->read('person')[0];
                     'contentOptions'=>['class'=>'text-right'],
                     'content'=> function($model) use ($form){
                         return $model->salary
-                        .$form->field($model,"salary[{$model->user_id}]")->hiddenInput(['salary'=>$model->salary])->label(false);
+                        .$form->field($model,"salary[{$model->user_id}]")->hiddenInput(['value'=>$model->salary])->label(false);
                     },
                 ],
                 [

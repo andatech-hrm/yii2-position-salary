@@ -48,7 +48,20 @@ Modal::end();
     ]);?>
 
 
-        <?php $form = ActiveForm::begin(['options'=>['data-pjax' => '']]); ?>
+        <?php $form = ActiveForm::begin([
+            'options'=>['data-pjax' => ''],
+            'layout' => 'horizontal',
+            'fieldConfig' => [
+                'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{endWrapper}{error}",
+                'horizontalCssClasses' => [
+                    'label' => 'col-sm-2',
+                    'offset' => 'col-sm-offset-2',
+                    'wrapper' => 'col-sm-4',
+                    'error' => 'col-sm-4',
+                    'hint' => '',
+                ],
+            ],
+        ]); ?>
         
 <div class="x_panel tile">
     <div class="x_title">
@@ -59,27 +72,25 @@ Modal::end();
 
 
 
-<div class="row">
-    
-    <div class="col-sm-6">
-         <?php echo $form->field($model,'title')->textInput();?>
-    </div>
-    <div class="col-sm-3">
+
+         <?php echo $form->field($model,'title',[
+            'horizontalCssClasses' => [
+                    'wrapper' => 'col-sm-6',
+                ]
+        ])->textInput();?>
+ 
+
         <?php echo $form->field($model,'adjust_date')->widget(DatePicker::classname(), [              
           'options' => [
             'daysOfWeekDisabled' => [0, 6],
           ]
         ]);?>
 
-    </div>
-</div>
  
-<div class="row">
-    
-    <div class="col-sm-6">
+ 
+
         <?php echo $form->field($model,'status')->radioList(Topic::getItemStatus())?>
-     </div>
-</div>
+ 
 <hr/>
 
 
@@ -89,18 +100,18 @@ Modal::end();
 $edocInputTemplate = <<< HTML
 <div class="input-group">
     {input}
-    <span class="input-group-btn">
-        <button type="button" class="btn btn-success" role="edoc" data-toggle="modal" data-target="#{$modals['edoc']->id}"><i class="fa fa-plus"></i></button>
+    <span class="input-group-addon btn btn-success"  role="edoc" data-toggle="modal" data-target="#{$modals['edoc']->id}">
+        <i class="fa fa-plus"></i>
     </span>
 </div>
 HTML;
-?>
-    <?= $form->field($model, "edoc_id", [
+echo $form->field($model, "edoc_id", [
         'inputTemplate' => $edocInputTemplate,
-        'options' => [
-            'class' => 'form-group col-sm-6'
-        ]
-    ])->widget(Select2::className(), WidgetSettings::Select2(['data' => Edoc::getList()])) ?>
+        // 'options' => [
+        //     'class' => 'form-group col-sm-6'
+        // ]
+    ])->widget(Select2::className(), WidgetSettings::Select2(['data' => Edoc::getList()]));
+?>
             
 </div>
 

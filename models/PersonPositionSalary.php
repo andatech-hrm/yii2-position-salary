@@ -129,9 +129,8 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
          'new_level', 'new_salary', 'new_position_id'
           ];
       $scenarios['status2'] = [
-         'status',
-         'user_id' ,'salary', 'position_id','step_adjust', 'level',
-         'new_level', 'new_salary'
+         'user_id' ,'salary', 'position_id', 'level','status',
+         'new_level','step_adjust', 'new_salary'
           ];
       
       return $scenarios;
@@ -202,4 +201,12 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
         return array_combine($range,$range);
     }
     
+    public function getTitleStep(){
+         return $this->title.($this->step_adjust*1>0?
+                '<br/>เลื่อน '.$this->step_adjust .' ขั้น'
+                :'');
+    }
+    public function getPositionTitleCode(){
+        return $this->position->title."<br/><small>".$this->position->code."</small>";
+    }
 }

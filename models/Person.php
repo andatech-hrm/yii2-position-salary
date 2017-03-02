@@ -39,12 +39,8 @@ class Person extends Model
     //public $select_person;
     public $selection;
     public $section_id;
-    public $percent;
-    public $previous;
     public $person_type_id;
     public $position_line_id;
-    public $dataPrevious;
-    public $dataStepCal;
     
      public function scenarios(){
           $scenarios = parent::scenarios();
@@ -55,6 +51,19 @@ class Person extends Model
               'position_line_id',
               ];
           return $scenarios;
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'selection' => Yii::t('andahrm/position-salary', 'Selection'),
+            'person_type_id' => Yii::t('andahrm/structure', 'Person Type'),
+            'section_id' => Yii::t('andahrm/structure', 'Section'),
+            'position_line_id' => Yii::t('andahrm/structure', 'Position Line'),
+        ];
     }
     
     

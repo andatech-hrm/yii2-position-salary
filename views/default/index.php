@@ -55,10 +55,15 @@ $columns = [
   'position_id'=> [
         'attribute'=>'position_id',
         'filter' => Position::getList(),
-        'value' => 'position.code'
+        'format'=>'html',
+        'value' => 'positionTitleCode'
     ],
   'adjust_date'=>'adjust_date:date',
-  'title'=>'title',
+  'title'=>[
+        'attribute'=>'title',
+        'format'=>'html',
+        'value' => 'titleStep'
+    ],
   'salary'=>'salary:decimal',
   'step'=>'step',
   'level'=>'level',
