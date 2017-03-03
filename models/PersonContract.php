@@ -54,10 +54,14 @@ class PersonContract extends \yii\db\ActiveRecord
             [
                 'class' => TimestampBehavior::className(),
             ],
-            // 'adjust_date' => [
-            //     'class' => DateBuddhistBehavior::className(),
-            //     'dateAttribute' => 'adjust_date',
-            // ],
+            'start_date' => [
+                'class' => DateBuddhistBehavior::className(),
+                'dateAttribute' => 'start_date',
+            ],
+            'end_date' => [
+                'class' => DateBuddhistBehavior::className(),
+                'dateAttribute' => 'end_date',
+            ],
         ];
     }
 
@@ -93,6 +97,15 @@ class PersonContract extends \yii\db\ActiveRecord
             'updated_by' => Yii::t('andahrm', 'Updated By'),
         ];
     }
+    
+    /** 
+    * @inheritdoc 
+    * @return PersonContractQuery the active query used by this AR class. 
+    */ 
+   public static function find() 
+   { 
+       return new PersonContractQuery(get_called_class()); 
+   }
 
     /**
      * @return \yii\db\ActiveQuery

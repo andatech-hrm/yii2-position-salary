@@ -5,6 +5,7 @@ namespace andahrm\positionSalary\models;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\base\Model;
+use andahrm\structure\models\Position;
 /**
  * This is the model class for table "insignia_person".
  *
@@ -28,9 +29,11 @@ class Assign extends PersonPositionSalary
     public function rules()
     {
         return [
-            [['user_id', 'new_position_id', 'new_level', 'new_salary','new_step'], 'required'],
+            [['user_id', 'new_level', 'new_salary','new_step'
+            ,'start_date','end_date','new_position_id'
+            ], 'required'],
             // [['user_id', 'position_id', 'edoc_id', 'status', 'level', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
-            // [['adjust_date'], 'safe'],
+             //[['start_date','end_date','new_position_id'], 'safe'],
             // [['step_adjust', 'salary','step'], 'number'],
             // [['title'], 'string', 'max' => 255],
           
@@ -38,19 +41,28 @@ class Assign extends PersonPositionSalary
     }
     
     
+    public $new_level;
+    public $new_salary;
+    public $new_step;
+    public $new_position_id;
     
-    public function attributeLabels()
-    {
-        $label = parent::attributeLabels();
-        $newLabel = [];
-        $newLabel = [
-            'new_step' => Yii::t('andahrm/position-salary', 'New Step'),
-            'new_level' => Yii::t('andahrm/position-salary', 'New Level'),
-            'new_salary' => Yii::t('andahrm/position-salary', 'New Salary'),
-            'new_position_id' => Yii::t('andahrm/position-salary', 'New Position'),
-        ];
-        return array_merge($label,$newLabel);
-    }
+    public $start_date;
+    public $end_date;
+    
+    // public function attributeLabels()
+    // {
+    //     $label = parent::attributeLabels();
+    //     $newLabel = [];
+    //     $newLabel = [
+    //         'new_step' => Yii::t('andahrm/position-salary', 'New Step'),
+    //         'new_level' => Yii::t('andahrm/position-salary', 'New Level'),
+    //         'new_salary' => Yii::t('andahrm/position-salary', 'New Salary'),
+    //         'new_position_id' => Yii::t('andahrm/position-salary', 'New Position'),
+    //         'start_date' => Yii::t('andahrm/position-salary', 'Start Date'),
+    //         'end_date' => Yii::t('andahrm/position-salary', 'End Date'),
+    //     ];
+    //     return array_merge($label,$newLabel);
+    // }
     
     
   
@@ -102,18 +114,38 @@ class Assign extends PersonPositionSalary
         //echo $this->status;
         switch($this->status){
             case 2:
-                $this->scenario = 'status2';
-                break;
+                $this->scenario = parent::SCENA_STATUS2;
+            break;
+            
+            case 3:
+                $this->scenario = parent::SCENA_STATUS3;
+            break;
+            
+            case 4:
+                $this->scenario = parent::SCENA_STATUS4;
+            break;
+           
         }
+        
+        
+        //echo parent::SCENA_STATUS3;
+        
         //echo $this->scenario;
+        //exit();
         
          if (parent::beforeValidate()) {
             //  print_r(Yii::$app->request->post());
             // exit();
+            
             return true;
         }
         return false;
     }
+    
+     public function getNewPosition($id){
+        return Position::findOne($id);
+    }
+    
     
     
 }

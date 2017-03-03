@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $modelTopic= $event->sender->read('topic')[0];
 $modelPerson= $event->sender->read('person')[0];
 $modelAssign= $event->sender->read('assign')[0];
-
+$status = $modelTopic->status;
 // echo "<pre>";
 //  print_r($modelAssign);
 // exit();
@@ -84,9 +84,10 @@ $modelAssign= $event->sender->read('assign')[0];
     </div>       
         
         <?php
-    
+    echo $this->render('_confirmStatus'.$status,['event'=>$event]);
+    ?>
   
-  
+  <?php /*
   echo GridView::widget([
             'dataProvider' => Assign::getPerson($modelPerson),
             'columns' => [
@@ -158,6 +159,7 @@ $modelAssign= $event->sender->read('assign')[0];
                
             ]
         ]);
+        */
         ?>
 
      <?=$this->render('button',['event'=>$event]);?>

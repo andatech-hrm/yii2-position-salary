@@ -5,6 +5,7 @@ namespace andahrm\positionSalary\controllers;
 use Yii;
 use yii\data\ActiveDataProvider;
 use andahrm\positionSalary\models\PersonPositionSalary;
+use andahrm\positionSalary\models\PersonContract;
 use andahrm\positionSalary\models\PersonPositionSalarySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -65,6 +66,7 @@ class DefaultController extends Controller
                         WizardBehavior::EVENT_INVALID_STEP => [$this, 'invalidStep']
                     ]
                 ];
+                 //$this->enableCsrfValidation = false;
                 break;
            
             case 'resume':
@@ -436,7 +438,17 @@ class DefaultController extends Controller
         }
 
         $post = Yii::$app->request->post();
-       
+        // if($post){
+        //     echo "<pre>";
+        //  print_r($post);
+        //  exit();
+         
+        // }
+        
+        if(isset($post['Assign']['status'])){
+            $model->scenario = 'status'.$post['Assign']['status'];
+         }
+        
         if (isset($post['cancel'])) {
             $event->continue = false;
         } elseif (isset($post['prev'])) {
@@ -455,16 +467,14 @@ class DefaultController extends Controller
                 $event->nextStep = WizardBehavior::DIRECTION_REPEAT;
             }
             
-             if($post){
-                print_r($post);
-                //exit();
-            }
+            
         } else {
-            // if($model->hasErrors()){
-            //     echo "DefaultController : ";
-            //     print_r($model->getErrors());
-            //     //exit();
-            // }
+            if($model->hasErrors()){
+                //echo "DefaultController : ";
+                //print_r($model->getErrors());
+                //exit();
+                //print_r($model->errors);
+            }
                 
             $event->data = $this->render('wizard/'.$event->step, compact('event', 'model'));
         }
@@ -527,9 +537,11 @@ class DefaultController extends Controller
             $err=[];
             if(isset($modelTopic) && isset($modelPerson) && isset($modelAssign) ){
                 
-                //  print_r($modelAssign->scenario);
+                //  print_r($modelAssign);
                 //  exit();
                 foreach ($modelPerson->selection as $key => $user_id) {
+                    
+                    
                     $modelPersonPositionSalary = new PersonPositionSalary(['scenario'=>$modelAssign->scenario]);
                     $modelPersonPositionSalary->user_id = $modelAssign->user_id[$user_id];
                     $modelPersonPositionSalary->position_id = $modelAssign->new_position_id[$user_id]?$modelAssign->new_position_id[$user_id]:$modelAssign->position_id[$user_id];
@@ -542,25 +554,38 @@ class DefaultController extends Controller
                     $modelPersonPositionSalary->salary = $modelAssign->new_salary[$user_id]?$modelAssign->new_salary[$user_id]:$modelAssign->salary[$user_id];
                     $modelPersonPositionSalary->adjust_date = $modelTopic->adjust_date;
                     
-                   if (($flag = $modelPersonPositionSalary->save()) === false) {
-                       $err[] = $modelPersonPositionSalary->getErrors();
+                    if(!PersonPositionSalary::find()->check($modelPersonPositionSalary->user_id,$modelPersonPositionSalary->position_id,$modelPersonPositionSalary->edoc_id)){
+                        if (($flag = $modelPersonPositionSalary->save()) === false) {
+                           $err[] = $modelPersonPositionSalary->getErrors();
+                        }
                     }
+                    
+                    if($modelTopic->status==3 && !PersonContract::find()->check($modelPersonPositionSalary->user_id,$modelPersonPositionSalary->position_id,$modelPersonPositionSalary->edoc_id)){
+                        $modelPersonContract = new PersonContract();
+                        $modelPersonContract->user_id = $modelPersonPositionSalary->user_id;
+                        $modelPersonContract->position_id = $modelPersonPositionSalary->position_id;
+                        $modelPersonContract->edoc_id = $modelPersonPositionSalary->edoc_id;
+                        $modelPersonContract->start_date = $modelAssign->start_date[$user_id];
+                        $modelPersonContract->end_date = $modelAssign->end_date[$user_id];
+                        if (($flag = $modelPersonContract->save()) === false) {
+                            $err[] = $modelPersonContract->getErrors();
+                         }
+                    }
+                    
+                   
                 }
                 
                 //exit();
+                 
                 
-                
-               if($flag){
+              if(!$flag && $err){
+                   echo 'Error  !'.$flag;
+                   print_r($err);
+                   exit();
+               }
                   $event->data = $this->render('wizard/complete', [
                     'data' => $event->stepData
                     ]);
-               }else{
-                   echo $flag;
-                   echo "save";
-                   print_r($err);
-                   //exit();
-                //$event->continue = false;
-               }
                 
             }
         } else {

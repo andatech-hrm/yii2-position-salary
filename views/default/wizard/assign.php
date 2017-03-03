@@ -11,20 +11,24 @@ use andahrm\positionSalary\models\Assign;
 /* @var $this yii\web\View */
 /* @var $model andahrm\leave\models\Leave */
 
-$this->title = Yii::t('andahrm/position-salary', 'Assign');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Person Position Salaries'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Create New'), 'url' => ['create','step'=>'reset']];
-$this->params['breadcrumbs'][] = $this->title;
-
-
-
 
 $modelTopic = $event->sender->read('topic')[0];
 $modelSelect = $event->sender->read('person')[0];
 $status = $modelTopic->status;
 //$modelSelect$modelSelect->leave_type_id;
 //print_r($modelTopic->status);
-//echo $model->scenario;
+$model->scenario = 'status'.$status;
+// echo $model->scenario;
+//echo '_formStatus'.$status;
+
+// echo "<pre>";
+//  print_r($model);
+// exit();
+
+$this->title = Yii::t('andahrm/position-salary', 'Assign').$modelTopic->statusLabel;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Person Position Salaries'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Create New'), 'url' => ['create','step'=>'reset']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php echo WizardMenu::widget([
@@ -41,7 +45,6 @@ $status = $modelTopic->status;
         echo $form->field($model,'status')->hiddenInput(['value'=>$modelTopic->status])->label(false);
         
         ?>
-
             <div class="x_panel tile">
             <div class="x_title">
                 <h2><?= $this->title; ?></h2>
@@ -61,7 +64,7 @@ $status = $modelTopic->status;
              
              
              
-               <?=$this->render('_formStatus'.$status,['event'=>$event,'form'=>$form]);?>
+               <?=$this->render('_formStatus'.$status,['event'=>$event,'form'=>$form,'modelAssign'=>$model]);?>
                
                <?=$this->render('button',['event'=>$event]);?>
               
