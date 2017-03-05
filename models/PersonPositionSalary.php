@@ -11,6 +11,9 @@ use yii\helpers\ArrayHelper;
 use andahrm\person\models\Person;
 use andahrm\edoc\models\Edoc;
 use andahrm\structure\models\Position;
+
+use kuakling\datepicker\behaviors\DateBuddhistBehavior;
+use kuakling\datepicker\behaviors\YearBuddhistBehavior;
 /**
  * This is the model class for table "person_position_salary".
  *
@@ -45,14 +48,19 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
   /**
      * @inheritdoc
      */
-    function behaviors()
+     function behaviors()
     {
+        
         return [
             [
                 'class' => BlameableBehavior::className(),
             ],
             [
                 'class' => TimestampBehavior::className(),
+            ],
+            'adjust_date' => [
+                'class' => DateBuddhistBehavior::className(),
+                'dateAttribute' => 'adjust_date',
             ],
         ];
     }
@@ -63,7 +71,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'position_id', 'edoc_id', 'adjust_date', 'title', 'status', 'level', 'salary'], 'required'],
+            [['user_id', 'position_id', 'edoc_id', 'adjust_date', 'title', 'status', 'level', 'salary' ], 'required'],
             [['user_id', 'position_id', 'edoc_id', 'status', 'level', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['adjust_date'], 'safe'],
             [['step_adjust', 'salary','step'], 'number'],
@@ -88,36 +96,69 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
             'title' => Yii::t('andahrm/position-salary', 'Title'),
             'status' => Yii::t('andahrm/position-salary', 'Status'),
             'step' => Yii::t('andahrm/position-salary', 'Step'),
-            'step_adjust' => Yii::t('andahrm/position-salary', 'Step Total'), 
+            'step_adjust' => Yii::t('andahrm/position-salary', 'Step Adjust'), 
             'level' => Yii::t('andahrm/position-salary', 'Level'),
             'salary' => Yii::t('andahrm/position-salary', 'Salary'),
             'created_at' => Yii::t('andahrm', 'Created At'),
             'created_by' => Yii::t('andahrm', 'Created By'),
             'updated_at' => Yii::t('andahrm', 'Updated At'),
             'updated_by' => Yii::t('andahrm', 'Updated By'),
+            
+            
+            'new_step' => Yii::t('andahrm/position-salary', 'New Step'),
+            'new_level' => Yii::t('andahrm/position-salary', 'New Level'),
+            'new_salary' => Yii::t('andahrm/position-salary', 'New Salary'),
+            'new_position_id' => Yii::t('andahrm/position-salary', 'New Position'),
+            'start_date' => Yii::t('andahrm/position-salary', 'Start Date'),
+            'end_date' => Yii::t('andahrm/position-salary', 'End Date'),
         ];
     }
+    
+   const SCENA_STATUS2 = 'status2'; 
+   const SCENA_STATUS3 = 'status3'; 
+   const SCENA_STATUS4= 'status4'; 
     
     public function scenarios(){
       $scenarios = parent::scenarios();
       
       $scenarios['new-person'] = [
           //'user_id',
-              'position_id', 
-              'edoc_id', 
-              'salary', 
-              'user_id', 
-              'level'
+              'position_id', 'edoc_id', 'salary', 'user_id', 'level','status',
           ];
+          
+      $scenarios['insert'] = [
+         'user_id' ,'salary', 'position_id', 'level','status',
+         //'new_level', 'new_salary', 'new_position_id'
+          ];
+      $scenarios[self::SCENA_STATUS2] = [
+         'user_id' ,'salary', 'position_id', 'level','status',
+         'new_level','step_adjust', 'new_salary'
+          ];
+      $scenarios[self::SCENA_STATUS3] = [
+         'user_id' ,'salary', 'position_id', 'level','status',
+         'new_position_id', 
+         'start_date', 'end_date'
+          ];
+      $scenarios[self::SCENA_STATUS4] = ['user_id' ,'salary', 'position_id', 'level','status' ];
       
       return $scenarios;
     }
     
+    /** 
+    * @inheritdoc 
+    * @return PersonContractQuery the active query used by this AR class. 
+    */ 
+   public static function find() 
+   { 
+       return new PersonPositionSalaryQuery(get_called_class()); 
+   }
     
-   const STATUS_LEAVE = 0; #สินสุดการจ้าง
+    
+
    const STATUS_FIRST_TIME = 1; #บรรจุแรกเข้า
    const STATUS_ADJUST = 2; #ปรับเงินเดือน
    const STATUS_MOVE = 3; #ย้ายสายงาน
+   const STATUS_LEAVE = 4; #สินสุดการจ้าง
     
     public static function itemsAlias($key) {
         $items = [
@@ -171,6 +212,20 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     public function getAssessment()
     {
         return $this->hasOne(Assessment::className(), ['user_id' => 'user_id']);
+    }
+    
+    public static function getRangeStep(){
+        $range = range(0.5,2,0.5);
+        return array_combine($range,$range);
+    }
+    
+    public function getTitleStep(){
+         return $this->title.($this->step_adjust*1>0?
+                '<br/>เลื่อน '.$this->step_adjust .' ขั้น'
+                :'');
+    }
+    public function getPositionTitleCode(){
+        return $this->position->titleCode;
     }
     
 }

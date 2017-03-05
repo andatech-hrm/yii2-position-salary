@@ -55,25 +55,30 @@ $columns = [
   'position_id'=> [
         'attribute'=>'position_id',
         'filter' => Position::getList(),
-        'value' => 'position.code'
+        'format'=>'html',
+        'value' => 'positionTitleCode'
     ],
   'adjust_date'=>'adjust_date:date',
-  'title'=>'title',
+  'title'=>[
+        'attribute'=>'title',
+        'format'=>'html',
+        'value' => 'titleStep'
+    ],
   'salary'=>'salary:decimal',
   'step'=>'step',
+  'level'=>'level',
 ];
 
 $gridColumns = [
    ['class' => '\kartik\grid\SerialColumn'],
    $columns['adjust_date'],
     $columns['user_id'], 
-    $columns['position_id'],   
     $columns['title'],
-    $columns['status'],
+    $columns['position_id'],   
+    $columns['level'], 
+    //$columns['status'],
     $columns['salary'],
-    $columns['step'],
     $columns['edoc_id'],   
-    
     ['class' => '\kartik\grid\ActionColumn',
     'template' => '{view} {delete}',
     ]
@@ -159,5 +164,3 @@ $(document).on('click', '#btn-reload-grid', function(e){
 ";
 
 $this->registerJs(implode("\n", $js));
-
-

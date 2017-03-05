@@ -104,15 +104,18 @@ Modal::end();
               'attribute'=>'user_id',
               'value'=>'user.fullname'
             ],
+             'title',
             [
-              'attribute'=>'position_id',
-              'value'=>'position.code'
-            ],            
-            'title',
-            // 'status',
-             //'step',
+                    'attribute'=>'position_id',
+                    'format'=>'html',
+                    'value'=> 'positionTitleCode'
+                ],           
+           
+           
+             'step_adjust',
              'level',
-             'salary',
+             'salary:decimal',
+              // 'status',
   ]
     ]); ?>
 
