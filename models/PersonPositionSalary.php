@@ -76,7 +76,6 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
             [['adjust_date'], 'safe'],
             [['step_adjust', 'salary','step','level'], 'number'],
             [['title'], 'string', 'max' => 255],
-            //[['level'], 'string', 'max' => 5],
             //[['step'], 'string', 'max' => 4],
             [['edoc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Edoc::className(), 'targetAttribute' => ['edoc_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Person::className(), 'targetAttribute' => ['user_id' => 'user_id']],
