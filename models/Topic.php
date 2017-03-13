@@ -46,6 +46,7 @@ class Topic extends PersonPositionSalary
             'status' => [
                 //self::STATUS_FIRST_TIME => Yii::t('andahrm/position-salary', 'First time'),
                 self::STATUS_ADJUST => Yii::t('andahrm/position-salary',  'Adjust salary'),
+                self::STATUS_LEVEL => Yii::t('andahrm/position-salary',  'Adjust Level'),
                 self::STATUS_MOVE => Yii::t('andahrm/position-salary',  'Move line'),
                 self::STATUS_LEAVE => Yii::t('andahrm/position-salary',  'Leave'),
             ],

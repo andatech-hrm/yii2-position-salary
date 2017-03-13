@@ -117,6 +117,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
    const SCENA_STATUS2 = 'status2'; 
    const SCENA_STATUS3 = 'status3'; 
    const SCENA_STATUS4= 'status4'; 
+   const SCENA_STATUS5= 'status5'; 
     
     public function scenarios(){
       $scenarios = parent::scenarios();
@@ -130,16 +131,22 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
          'user_id' ,'salary', 'position_id', 'level','status',
          //'new_level', 'new_salary', 'new_position_id'
           ];
+          
       $scenarios[self::SCENA_STATUS2] = [
          'user_id' ,'salary', 'position_id', 'level','status',
          'new_level','step_adjust', 'new_salary'
           ];
+          
       $scenarios[self::SCENA_STATUS3] = [
+         'user_id' ,'salary', 'position_id', 'level','status',
+         'new_level','step_adjust', 'new_salary'
+          ];
+      $scenarios[self::SCENA_STATUS4] = [
          'user_id' ,'salary', 'position_id', 'level','status',
          'new_position_id', 
          'start_date', 'end_date'
           ];
-      $scenarios[self::SCENA_STATUS4] = ['user_id' ,'salary', 'position_id', 'level','status' ];
+      $scenarios[self::SCENA_STATUS5] = ['user_id' ,'salary', 'position_id', 'level','status' ];
       
       return $scenarios;
     }
@@ -156,15 +163,17 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     
 
    const STATUS_FIRST_TIME = 1; #บรรจุแรกเข้า
-   const STATUS_ADJUST = 2; #ปรับเงินเดือน
-   const STATUS_MOVE = 3; #ย้ายสายงาน
-   const STATUS_LEAVE = 4; #สินสุดการจ้าง
+   const STATUS_ADJUST = 2; #เลื่อนปรับเงินเดือน
+   const STATUS_LEVEL = 3; #เลื่อนระดับ
+   const STATUS_MOVE = 4; #ย้ายสายงาน
+   const STATUS_LEAVE = 5; #สินสุดการจ้าง
     
     public static function itemsAlias($key) {
         $items = [
             'status' => [
                 self::STATUS_FIRST_TIME => Yii::t('andahrm/position-salary', 'First time'),
                 self::STATUS_ADJUST => Yii::t('andahrm/position-salary',  'Adjust salary'),
+                self::STATUS_LEVEL => Yii::t('andahrm/position-salary',  'Adjust Level'),
                 self::STATUS_MOVE => Yii::t('andahrm/position-salary',  'Move line'),
                 self::STATUS_LEAVE => Yii::t('andahrm/position-salary',  'Leave'),
             ],
