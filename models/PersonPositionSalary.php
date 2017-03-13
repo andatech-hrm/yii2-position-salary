@@ -221,7 +221,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     
     public function getTitleStep(){
          return $this->title.($this->step_adjust*1>0?
-                '<br/>เลื่อน '.$this->step_adjust .' ขั้น'
+                ' เลื่อน '.$this->step_adjust .' ขั้น'
                 :'');
     }
     public function getPositionTitleCode(){
