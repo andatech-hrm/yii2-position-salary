@@ -71,7 +71,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'position_id', 'edoc_id', 'adjust_date', 'title', 'status', 'level', 'salary' ], 'required'],
+            [['user_id', 'position_id', 'edoc_id', 'adjust_date', 'title', 'status', 'level', 'salary','person_type_id' ], 'required'],
             [['user_id', 'position_id', 'edoc_id', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['adjust_date'], 'safe'],
             [['step_adjust', 'salary','step','level'], 'number'],
@@ -104,7 +104,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
             'updated_at' => Yii::t('andahrm', 'Updated At'),
             'updated_by' => Yii::t('andahrm', 'Updated By'),
             
-            
+            'person_type_id' => Yii::t('andahrm/structure', 'Person Type'),
             'new_step' => Yii::t('andahrm/position-salary', 'New Step'),
             'new_level' => Yii::t('andahrm/position-salary', 'New Level'),
             'new_salary' => Yii::t('andahrm/position-salary', 'New Salary'),
@@ -113,6 +113,8 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
             'end_date' => Yii::t('andahrm/position-salary', 'End Date'),
         ];
     }
+    
+    public $person_type_id;
     
    const SCENA_STATUS2 = 'status2'; 
    const SCENA_STATUS3 = 'status3'; 
@@ -159,6 +161,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
    const STATUS_ADJUST = 2; #ปรับเงินเดือน
    const STATUS_MOVE = 3; #ย้ายสายงาน
    const STATUS_LEAVE = 4; #สินสุดการจ้าง
+   const STATUS_TRANSFER = 4; #สินสุดการจ้าง
     
     public static function itemsAlias($key) {
         $items = [

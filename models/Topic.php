@@ -34,16 +34,25 @@ use andahrm\structure\models\Position;
  */
 class Topic extends PersonPositionSalary
 {
+  
+   //public $person_type_id;
     public function scenarios(){
       $scenarios = parent::scenarios();
-      $scenarios['insert'] = [ 'edoc_id', 'adjust_date', 'title', 'status'];
+      $scenarios['insert'] = [ 'edoc_id', 'adjust_date', 'title', 'status','person_type_id'];
       return $scenarios;
     }
    
    
    public static function itemsAlias($key) {
         $items = [
-            'status' => [
+            'status1' => [
+                //self::STATUS_FIRST_TIME => Yii::t('andahrm/position-salary', 'First time'),
+                self::STATUS_ADJUST => Yii::t('andahrm/position-salary',  'Adjust salary'),
+                self::STATUS_MOVE => Yii::t('andahrm/position-salary',  'Move line'),
+                self::STATUS_LEAVE => Yii::t('andahrm/position-salary',  'Leave'),
+                self::STATUS_TRANSFER => Yii::t('andahrm/position-salary',  'Transfer'),
+            ],
+            'status2' => [
                 //self::STATUS_FIRST_TIME => Yii::t('andahrm/position-salary', 'First time'),
                 self::STATUS_ADJUST => Yii::t('andahrm/position-salary',  'Adjust salary'),
                 self::STATUS_MOVE => Yii::t('andahrm/position-salary',  'Move line'),
@@ -57,8 +66,11 @@ class Topic extends PersonPositionSalary
         return ArrayHelper::getValue($this->getItemStatus(), $this->status);
     }
 
-    public static function getItemStatus() {
-          return self::itemsAlias('status');
-     }
+    public static function getItemStatus1() {
+          return self::itemsAlias('status2');
+    }
+    public static function getItemStatus2() {
+          return self::itemsAlias('status2');
+    }
     
 }

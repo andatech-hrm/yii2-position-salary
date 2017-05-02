@@ -5,22 +5,19 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\Pjax;
-
-use backend\widgets\WizardMenu;
-
-
 use kartik\widgets\Typeahead;
 use kartik\widgets\DepDrop;
 use kartik\widgets\Select2;
 use yii\bootstrap\Modal;
 use yii\web\JsExpression;
-use andahrm\setting\models\WidgetSettings;
-
-use andahrm\positionSalary\models\Topic;
-use andahrm\edoc\models\Edoc;
 use yii\helpers\Json;
+use backend\widgets\WizardMenu;
 
 use kuakling\datepicker\DatePicker;
+use andahrm\setting\models\WidgetSettings;
+use andahrm\positionSalary\models\Topic;
+use andahrm\edoc\models\Edoc;
+use andahrm\structure\models\PersonType;
 
 
 $this->title = Yii::t('andahrm/position-salary', 'Topic');
@@ -89,7 +86,13 @@ Modal::end();
  
  
 
-        <?php echo $form->field($model,'status')->radioList(Topic::getItemStatus())?>
+        <?php echo $form->field($model,'person_type_id')->radioList(PersonType::getParentList(false))?>
+        
+        
+        
+        <?php echo $form->field($model,'status')->radioList(Topic::getItemStatus1(),['id'=>'status1'])?>
+        
+        <?php echo $form->field($model,'status')->radioList(Topic::getItemStatus2(),['id'=>'status2'])?>
  
 <hr/>
 
@@ -136,9 +139,21 @@ function callbackEdoc(result)
     $("#{$edocInputId}").val(result.id).trigger('change.select2');
     
     $("#{$modals['edoc']->id}").modal('hide');
+    
+    
 }
+JS;
+$this->registerJs(implode("\n", $jsHead), $this::POS_HEAD);
+
+
+$js[] = <<< JS
+  $(".field-status1, .field-status2").hide();
+      $("input[name='Topic[person_type_id]']").on('change',function(){
+          $(".field-status1, .field-status2").show();
+      });
+
 JS;
 
 
-$this->registerJs(implode("\n", $jsHead), $this::POS_HEAD);
+$this->registerJs(implode("\n", $js));
 ?>
