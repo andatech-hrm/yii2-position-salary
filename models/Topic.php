@@ -38,7 +38,7 @@ class Topic extends PersonPositionSalary
    //public $person_type_id;
     public function scenarios(){
       $scenarios = parent::scenarios();
-      $scenarios['insert'] = [ 'edoc_id', 'adjust_date', 'title', 'status','person_type_id'];
+      $scenarios['insert'] = [ 'edoc_id', 'adjust_date', 'title', 'status','person_type_id','select_status'];
       return $scenarios;
     }
    

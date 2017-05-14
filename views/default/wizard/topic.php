@@ -71,9 +71,8 @@ Modal::end();
     </div>
     <div class="x_content">
 
-11
         <?php #echo $form->errorSummary($model); ?>
-22
+        
          <?php echo $form->field($model,'title',[
             'horizontalCssClasses' => [
                     'wrapper' => 'col-sm-6',
