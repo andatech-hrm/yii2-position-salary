@@ -102,11 +102,57 @@ class DefaultController extends Controller
         ]);
     }
     
-    public function actionBindPerson($selection=null,$section_id=null,$person_type_id=null,$position_line_id=null)
+    //public function actionAddPerson($user)
+    
+    public function actionBindPerson($mode='bind',$selection=null,$section_id=null,$person_type_id=null,$position_line_id=null,$user_id=null)
     {
+        //echo $selection;
+        $selection = $selection?json_decode($selection):null;
+        $session = Yii::$app->session;
+        
+        
+        # if have not this session
+        //$session->destroy('select_person');
+        if (!$session->has('select_person')) {
+            $session->set('select_person', null);
+        }
+        
+        echo "o";print_r($session['select_person']);
+        echo "l";print_r($selection);
+        echo "<br/>";
+        
+        // if($selection!==$session['select_person']){
+        //     if($selection){
+        //         $session->set('select_person', $selection);
+        //     }else{
+        //         $selection=$session['select_person'];
+        //     }
+        // }
+        
+        if($mode=='add'){
+            $selection=$session['select_person'];
+            $selection[]=$user_id;
+            $session->set('select_person', $selection);
+        }elseif($mode=='del'){
+            $selection=$session['select_person'];
+            $indexUser = array_search($user_id, $selection);
+            unset($selection[$indexUser]);
+            $session->set('select_person', $selection);
+        }elseif($selection){
+            $session->set('select_person', $selection);
+        }
+        // else
+        //     $session->set('select_person', null);
+        // }
+        $selection=$session['select_person'];
+        
+        
+        echo "o";print_r($session['select_person']);
+        echo "l";print_r($selection);
+        echo "<br/>";
         
         $query = PersonPositionSalary::find()->joinWith('position', false, 'INNER JOIN')
-                 //->where(['position.section_id'=>$section_id])
+                 ->andFilterWhere(['NOT IN','user_id',$selection])
                  ->andFilterWhere(['position.section_id'=>$section_id])
                  ->andFilterWhere(['position.person_type_id'=>$person_type_id])
                  ->andFilterWhere(['position.position_line_id'=>$position_line_id])
@@ -118,9 +164,7 @@ class DefaultController extends Controller
                 //print_r($query);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => [
-                //'pageSize' => 10,
-            ],
+            'pagination' => false,
             // 'sort' => [
             //     'defaultOrder' => [
             //         'created_at' => SORT_DESC,
@@ -129,11 +173,28 @@ class DefaultController extends Controller
             // ],
         ]);
         
-        $selection = $selection?json_decode($selection):'';
+       
+        
+        $querySelected = PersonPositionSalary::find()->joinWith('position', false, 'INNER JOIN')
+                ->where(['user_id'=>$selection])
+                ->groupBy([
+                    //'position.id',
+                    'user_id',
+                ])
+                ->orderBy(['position_id'=>SORT_ASC,'adjust_date'=>SORT_ASC]);
+                //print_r($querySelected);
+        $dataSelectedProvider = new ActiveDataProvider([
+            'query' => $querySelected,
+            'pagination' => false,
+        ]);
+        
+       
         //print_r($selection);
+        //return $this->render('bind-person', [
         return $this->renderPartial('bind-person', [
             //'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'dataSelectedProvider' => $dataSelectedProvider,
             'selection' => $selection
         ]);
     }

@@ -118,40 +118,44 @@ $urlPerson = Url::to(['bind-person']);
 $selection = json_encode($model->selection);
 $js[] = <<< Js
     
-    $(function(){
+    //$(function(){
+        var urlPerson = "{$urlPerson}";
         var selection='{$selection}';
         var section_id=$('#person-section_id option:selected').val();
         var person_type_id=$('#person-person_type_id option:selected').val();
         var position_line_id=$('#person-position_line_id option:selected').val();
         
-        //bindPerson(selection,section_id,person_type_id,position_line_id);
+        if(section_id||person_type_id||position_line_id)
+        bindPerson(section_id,person_type_id,position_line_id,urlPerson,selection);
         
         $('#person-section_id').change(function(){
             section_id = $(this).find('option:selected').val();
-            bindPerson(selection,section_id,person_type_id,position_line_id);
+            bindPerson(section_id,person_type_id,position_line_id,urlPerson,selection);
             console.log('person-section_id');
         });
         
         $('#person-person_type_id').change(function(){
             person_type_id = $(this).find('option:selected').val();
-            bindPerson(selection,section_id,person_type_id,position_line_id);
+            bindPerson(section_id,person_type_id,position_line_id,urlPerson,selection);
             console.log('person-person_type_id');
         });
         
          $('#person-position_line_id').change(function(){
             position_line_id = $(this).find('option:selected').val();
-            bindPerson(selection,section_id,person_type_id,position_line_id);
+            bindPerson(section_id,person_type_id,position_line_id,urlPerson,selection);
             console.log('person-position_line_id');
         });
         
         
-    });
+    //});
     
 
 Js;
 $js[] = <<< Js
-    function bindPerson(selection,section_id,person_type_id,position_line_id){
-        $.get("{$urlPerson}",{
+    function bindPerson(section_id,person_type_id,position_line_id,url,selection){
+        //alert(url);
+        $.get(url,{
+            //model:'bind',
             selection:selection,
             section_id:section_id,
             person_type_id:person_type_id,
@@ -159,9 +163,30 @@ $js[] = <<< Js
         },function(data){
             console.log(data);
             $('.grid-view-area').html(data);
+            bindBtnAddDel();
         });
     }
 Js;
+
+$js[] = <<< Js
+    function bindBtnAddDel(){
+        $('.grid-view-area .btn-add,.grid-view-area .btn-del').unbind('click');
+        $('.grid-view-area .btn-add').click(function(){
+            //alert($(this).attr('href'));
+            var urlPerson = $(this).attr('href');
+            bindPerson(section_id,person_type_id,position_line_id,urlPerson);
+            return false;
+        });
+        
+        $('.grid-view-area .btn-del').click(function(){
+            //alert($(this).attr('href'));
+            var urlPerson = $(this).attr('href');
+            bindPerson(section_id,person_type_id,position_line_id,urlPerson);
+            return false;
+        });
+    }
+Js;
+
 
 $this->registerJs(implode("\n",$js));
 
