@@ -91,6 +91,7 @@ $fullExportMenu = ExportMenu::widget([
     'showConfirmAlert' => false,
     'target' => ExportMenu::TARGET_BLANK,
     'fontAwesome' => true,
+    'encoding'=>'utf-8',
     'pjaxContainerId' => 'kv-pjax-container',
     'dropdownOptions' => [
         'label' => 'Full',
@@ -98,7 +99,16 @@ $fullExportMenu = ExportMenu::widget([
         'itemsBefore' => [
             '<li class="dropdown-header">Export All Data</li>',
         ],
+         'exportConfig'=>[
+        ExportMenu::FORMAT_PDF => [
+        'encoding'=>'utf8',
+        'mime' => 'application/pdf',
+        'extension' => 'pdf',
+        'writer' => 'PDF'
+        ],
     ],
+    ],
+   
 ]);
 ?>
 <div class="person-index">

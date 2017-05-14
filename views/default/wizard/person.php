@@ -16,6 +16,7 @@ use kartik\widgets\DepDrop;
 
 use yii\widgets\Pjax;
 
+$modelTopic = $event->sender->read('topic')[0];
 //print_r($person);
  
 //print_r($event);
@@ -62,15 +63,17 @@ $this->params['breadcrumbs'][] = $this->title;
         
         <div class="row">
         
-      <div class="col-sm-4">
-        <?= $form->field($model, 'section_id')->dropDownList(Section::getList(),['prompt'=>Yii::t('app','Select')]) ?>
-      </div>
+      
       
       <div class="col-sm-4">
-        <?= $form->field($model, 'person_type_id')->dropDownList(PersonType::getList(),[
+        <?= $form->field($model, 'person_type_id')->dropDownList(PersonType::getList(false,$modelTopic->person_type_id),[
           'prompt'=>Yii::t('app','Select'),
           //'id'=>'ddl-person_type',
         ]) ?>
+      </div>
+      
+      <div class="col-sm-4">
+        <?= $form->field($model, 'section_id')->dropDownList(Section::getList(),['prompt'=>Yii::t('app','Select')]) ?>
       </div>
       
 
@@ -121,7 +124,7 @@ $js[] = <<< Js
         var person_type_id=$('#person-person_type_id option:selected').val();
         var position_line_id=$('#person-position_line_id option:selected').val();
         
-        bindPerson(selection,section_id,person_type_id,position_line_id);
+        //bindPerson(selection,section_id,person_type_id,position_line_id);
         
         $('#person-section_id').change(function(){
             section_id = $(this).find('option:selected').val();
@@ -132,7 +135,7 @@ $js[] = <<< Js
         $('#person-person_type_id').change(function(){
             person_type_id = $(this).find('option:selected').val();
             bindPerson(selection,section_id,person_type_id,position_line_id);
-            console.log('person-section_id');
+            console.log('person-person_type_id');
         });
         
          $('#person-position_line_id').change(function(){
@@ -148,7 +151,7 @@ $js[] = <<< Js
 Js;
 $js[] = <<< Js
     function bindPerson(selection,section_id,person_type_id,position_line_id){
-        $.get('{$urlPerson}',{
+        $.get("{$urlPerson}",{
             selection:selection,
             section_id:section_id,
             person_type_id:person_type_id,

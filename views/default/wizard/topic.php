@@ -19,6 +19,10 @@ use andahrm\positionSalary\models\Topic;
 use andahrm\edoc\models\Edoc;
 use andahrm\structure\models\PersonType;
 
+$modelTopic = isset($event->sender->read('topic')[0])?$event->sender->read('topic')[0]:null;
+// echo "<pre>";
+// print_r($modelTopic->person_type_id);
+// exit();
 
 $this->title = Yii::t('andahrm/position-salary', 'Topic');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Person Position Salaries'), 'url' => ['index']];
@@ -67,9 +71,9 @@ Modal::end();
     </div>
     <div class="x_content">
 
-
-
-
+11
+        <?php #echo $form->errorSummary($model); ?>
+22
          <?php echo $form->field($model,'title',[
             'horizontalCssClasses' => [
                     'wrapper' => 'col-sm-6',
@@ -89,10 +93,28 @@ Modal::end();
         <?php echo $form->field($model,'person_type_id')->radioList(PersonType::getParentList(false))?>
         
         
+        <div class="status" style="display:none;">
+           
+            <?php 
+            
+            foreach( PersonType::getParentList(false) as $idStatus => $titleStatus ){
+                //$getItem = 'getItemStatus'.$idStatus;
+                echo $form->field( $model, "select_status[{$idStatus}]" )->radioList(Topic::getItemStatusGroup($idStatus),['id'=>'select_status'.$idStatus]);
+            }
+            ?>
+            
+             
+         <?=$form->field($model, "status",[
+            'horizontalCssClasses' => [
+                    'label' => 'col-sm-2',
+                    'offset' => 'col-sm-offset-2',
+                    'wrapper' => false,
+                    'error' => 'col-sm-4 col-sm-offset-2',
+                    'hint' => '',
+                ],
+        ])->hiddenInput()->label(false);?>   
+        </div>
         
-        <?php echo $form->field($model,'status')->radioList(Topic::getItemStatus1(),['id'=>'status1'])?>
-        
-        <?php echo $form->field($model,'status')->radioList(Topic::getItemStatus2(),['id'=>'status2'])?>
  
 <hr/>
 
@@ -144,13 +166,49 @@ function callbackEdoc(result)
 }
 JS;
 $this->registerJs(implode("\n", $jsHead), $this::POS_HEAD);
-
+$person_type_id = isset($modelTopic->person_type_id)?$modelTopic->person_type_id:null;
 
 $js[] = <<< JS
-  $(".field-status1, .field-status2").hide();
+//On load
+  var className = 'required';
+  //$(".status .form-group ").removeClass(className);
+  $(".status .form-group:not(.field-topic-status)").hide();
+  $(".status .form-group  input[name='Topic[select_status]'] ").attr('disabled',true);
+  var id = "{$person_type_id}";
+  if(id){
+     $(".field-select_status"+id).fadeIn(500);
+    $(".field-select_status"+id+" input[name='Topic[select_status]']").attr('disabled',false);
+  }
+  $(".status").show();
+  
+  //When select Person type
       $("input[name='Topic[person_type_id]']").on('change',function(){
-          $(".field-status1, .field-status2").show();
+          var id = $(this).val();
+          
+          ///$(".status .form-group ").removeClass(className);
+          $(".status .form-group:not(.field-topic-status)").hide();
+          $(".status .form-group input[name='Topic[select_status]'] ").attr('disabled',true);
+          
+          
+          //$(".field-status"+id).addClass(className);
+          $(".field-select_status"+id).fadeIn(500);
+          $(".field-select_status"+id+" input[name='Topic[select_status]']").attr('disabled',false);
+          bineToStatus(id);
       });
+      
+//Add event radio
+function bineToStatus(id){
+     $("input[type='radio'][name='Topic[select_status]["+id+"]']").each(function(index){
+         //alert($(this).selector);
+         $(this).on('change',function(){
+             //alert($(this).val()); 
+             $("input[name='Topic[status]']").val($(this).val());
+              $(".status .form-group.field-topic-status").removeClass("has-error");
+              $(".status .form-group.field-topic-status .help-block-error").hide();
+         });
+        
+     });
+}
 
 JS;
 

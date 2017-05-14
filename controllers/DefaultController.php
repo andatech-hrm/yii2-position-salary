@@ -26,6 +26,7 @@ use andahrm\structure\models\Structure;
 use andahrm\structure\models\FiscalYear;
 use andahrm\structure\models\PositionLine;
 use andahrm\structure\models\Position;
+use andahrm\structure\models\PersonType;
 
 /**
  * DefaultController implements the CRUD actions for PersonPositionSalary model.
@@ -456,10 +457,20 @@ class DefaultController extends Controller
             $event->handled  = true;
         } elseif ($model->load($post) && $model->validate()) {
             
+            // if(isset($post['Topic']['status'])){
+            //     if(empty($post['Topic']['status'][$post['Topic']['person_type_id']]) ){
+            //         print_r($post);
+            //         //exit();
+            //         $model->addError('status','Plase select');
+            //         $event->nextStep = WizardBehavior::DIRECTION_REPEAT;
+            //     }
+            //  }
             
             
             $event->data    = $model;
             $event->handled = true;
+            
+            
 
             if (isset($post['pause'])) {
                 $event->continue = false;
@@ -668,6 +679,11 @@ class DefaultController extends Controller
      }
 
       protected function getPositionLine($section_id,$person_type_id=null){
+        //   if($person_type_id){
+        //       $person_type_id = PersonType::find($person_type_id)->indexBy('parent_id')->one();
+        //   }
+          
+          
          $datas = PositionLine::find()
          ->joinWith('position')->where([
              'position.section_id'=>$section_id,
