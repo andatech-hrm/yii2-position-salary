@@ -110,25 +110,12 @@ class DefaultController extends Controller
         $selection = $selection?json_decode($selection):null;
         $session = Yii::$app->session;
         
-        
         # if have not this session
         //$session->destroy('select_person');
         if (!$session->has('select_person')) {
             $session->set('select_person', null);
         }
-        
-        echo "o";print_r($session['select_person']);
-        echo "l";print_r($selection);
-        echo "<br/>";
-        
-        // if($selection!==$session['select_person']){
-        //     if($selection){
-        //         $session->set('select_person', $selection);
-        //     }else{
-        //         $selection=$session['select_person'];
-        //     }
-        // }
-        
+     
         if($mode=='add'){
             $selection=$session['select_person'];
             $selection[]=$user_id;
@@ -146,10 +133,9 @@ class DefaultController extends Controller
         // }
         $selection=$session['select_person'];
         
-        
-        echo "o";print_r($session['select_person']);
-        echo "l";print_r($selection);
-        echo "<br/>";
+        // echo "o";print_r($session['select_person']);
+        // echo "l";print_r($selection);
+        // echo "<br/>";
         
         $query = PersonPositionSalary::find()->joinWith('position', false, 'INNER JOIN')
                  ->andFilterWhere(['NOT IN','user_id',$selection])
@@ -165,23 +151,19 @@ class DefaultController extends Controller
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => false,
-            // 'sort' => [
-            //     'defaultOrder' => [
-            //         'created_at' => SORT_DESC,
-            //         'title' => SORT_ASC, 
-            //     ]
-            // ],
         ]);
         
        
-        
+        $sortField = implode(',', $selection);
         $querySelected = PersonPositionSalary::find()->joinWith('position', false, 'INNER JOIN')
                 ->where(['user_id'=>$selection])
                 ->groupBy([
                     //'position.id',
                     'user_id',
-                ])
-                ->orderBy(['position_id'=>SORT_ASC,'adjust_date'=>SORT_ASC]);
+                ]);
+                //->orderBy(['position_id'=>SORT_ASC,'adjust_date'=>SORT_ASC]);
+        if($selection)
+        $querySelected->orderBy([new \yii\db\Expression('FIELD (user_id, ' . $sortField . ')')]);
                 //print_r($querySelected);
         $dataSelectedProvider = new ActiveDataProvider([
             'query' => $querySelected,

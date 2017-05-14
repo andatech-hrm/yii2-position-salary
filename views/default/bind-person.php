@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
@@ -21,7 +21,7 @@ use yii\widgets\Pjax;
 
         <?php
         //$selection = $model; #Global
-        Pjax::begin();
+        echo Html::tag('h2',Yii::t('andahrm/position-salary', 'Search List'));
         echo yii\grid\GridView::widget([
             'dataProvider' => $dataProvider,
             'columns' => [
@@ -75,7 +75,7 @@ use yii\widgets\Pjax;
                 ],
                 [
                     'content' => function($model){
-                        return Html::a('Add',[
+                        return Html::a(Html::icon('ok').' '.Yii::t('andahrm/position-salary', 'Add Person'),[
                             'bind-person','mode'=>'add','user_id'=>$model->user_id
                             ],['class'=>'btn btn-success btn-add']);        
                     }
@@ -83,7 +83,7 @@ use yii\widgets\Pjax;
             ]
         ]);
         
-        
+        echo Html::tag('h2',Yii::t('andahrm/position-salary', 'Selected List'));
         echo yii\grid\GridView::widget([
             'dataProvider' => $dataSelectedProvider,
             'columns' => [
@@ -137,15 +137,15 @@ use yii\widgets\Pjax;
                 ],
                 [
                     'content' => function($model){
-                        return Html::a('Remove',[
+                        return Html::a(Html::icon('remove').' '.Yii::t('andahrm/position-salary', 'Remove Person'),[
                             'bind-person','mode'=>'del','user_id'=>$model->user_id
                             ],['class'=>'btn btn-warning btn-del'])
-                        .Html::textInput('Person[selection][]',$model->user_id);        
+                        .Html::hiddenInput('Person[selection][]',$model->user_id);        
                     }
                 ]
             ]
         ]);
-        Pjax::begin();
+       
         ?>
         
 <?php
