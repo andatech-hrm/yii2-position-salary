@@ -15,6 +15,7 @@ use andahrm\positionSalary\models\Assign;
 $modelTopic = $event->sender->read('topic')[0];
 $modelSelect = $event->sender->read('person')[0];
 $status = $modelTopic->status;
+$modelTopic->status." ".$modelTopic->person_type_id;
 //$modelSelect$modelSelect->leave_type_id;
 //print_r($modelTopic->status);
 $model->scenario = 'status'.$status;
@@ -25,7 +26,7 @@ $model->scenario = 'status'.$status;
 //  print_r($model);
 // exit();
 
-$this->title = Yii::t('andahrm/position-salary', 'Assign').$modelTopic->statusLabel;
+$this->title = Yii::t('andahrm/position-salary', 'Assign');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Person Position Salaries'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('andahrm/position-salary', 'Create New'), 'url' => ['create','step'=>'reset']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -47,10 +48,12 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
             <div class="x_panel tile">
             <div class="x_title">
-                <h2><?= $this->title; ?></h2>
+                <h2><?= $this->title . $modelTopic->getStatusLabelGroup($modelTopic->person_type_id); ?></h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
+            
+            
             <?php if($model->hasErrors()):?>
                     <!--<div class="alert alert-warning alert-dismissible fade in" role="alert">-->
                     <!--    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>-->

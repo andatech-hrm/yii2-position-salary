@@ -154,7 +154,7 @@ class DefaultController extends Controller
         ]);
         
        
-        $sortField = implode(',', $selection);
+        
         $querySelected = PersonPositionSalary::find()->joinWith('position', false, 'INNER JOIN')
                 ->where(['user_id'=>$selection])
                 ->groupBy([
@@ -162,8 +162,10 @@ class DefaultController extends Controller
                     'user_id',
                 ]);
                 //->orderBy(['position_id'=>SORT_ASC,'adjust_date'=>SORT_ASC]);
-        if($selection)
-        $querySelected->orderBy([new \yii\db\Expression('FIELD (user_id, ' . $sortField . ')')]);
+        if($selection){
+            $sortField = implode(',', $selection);
+            $querySelected->orderBy([new \yii\db\Expression('FIELD (user_id, ' . $sortField . ')')]);
+        }
                 //print_r($querySelected);
         $dataSelectedProvider = new ActiveDataProvider([
             'query' => $querySelected,

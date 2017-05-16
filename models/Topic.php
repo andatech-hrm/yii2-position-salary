@@ -54,9 +54,9 @@ class Topic extends PersonPositionSalary
             ],
             'status2' => [
                 //self::STATUS_FIRST_TIME => Yii::t('andahrm/position-salary', 'First time'),
-                self::STATUS_ADJUST => Yii::t('andahrm/position-salary',  'Adjust salary'),
-                self::STATUS_MOVE => Yii::t('andahrm/position-salary',  'Renew a contract'),
-                self::STATUS_LEAVE => Yii::t('andahrm/position-salary',  'Ending employment'),
+                self::STATUS_ADJUST => Yii::t('andahrm/position-salary',  'Adjust salary'),//ปรับเงินเดือน
+                self::STATUS_MOVE => Yii::t('andahrm/position-salary',  'Renew a contract'),//ต่อสัญญา
+                self::STATUS_LEAVE => Yii::t('andahrm/position-salary',  'Ending employment'),//สิ้นสุดการจ้าง
             ],
         ];
         return ArrayHelper::getValue($items, $key, []);
@@ -71,6 +71,10 @@ class Topic extends PersonPositionSalary
     }
     public static function getItemStatus2() {
           return self::itemsAlias('status2');
+    }
+    
+    public function getStatusLabelGroup($group) {
+        return ArrayHelper::getValue($this->getItemStatusGroup($group), $this->status);
     }
     
     public static function getItemStatusGroup($group) {
