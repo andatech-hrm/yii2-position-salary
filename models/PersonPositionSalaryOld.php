@@ -69,15 +69,16 @@ class PersonPositionSalaryOld extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'position_old_id', 'edoc_id', 'adjust_date', 'title', 'status', 'level', 'salary'], 'required'],
+            [['user_id', 'position_old_id', 'adjust_date', 'title', 'status', 'level', 'salary'], 'required'],
             [['user_id', 'position_old_id', 'edoc_id', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
-            [['adjust_date'], 'safe'],
+            [['adjust_date','new_edoc'], 'safe'],
             [['step_adjust', 'step', 'level', 'salary'], 'number'],
             [['title'], 'string', 'max' => 255],
             [['position_old_id'], 'exist', 'skipOnError' => true, 'targetClass' => PositionOld::className(), 'targetAttribute' => ['position_old_id' => 'id']],
         ];
     }
 
+    public $position_id;
     /**
      * @inheritdoc
      */
@@ -95,12 +96,16 @@ class PersonPositionSalaryOld extends \yii\db\ActiveRecord
             'step' => Yii::t('andahrm/position-salary', 'Step'),
             'level' => Yii::t('andahrm/position-salary', 'Level'),
             'salary' => Yii::t('andahrm/position-salary', 'Salary'),
-            'created_at' => Yii::t('andahrm/position-salary', 'Created At'),
-            'created_by' => Yii::t('andahrm/position-salary', 'Created By'),
-            'updated_at' => Yii::t('andahrm/position-salary', 'Updated At'),
-            'updated_by' => Yii::t('andahrm/position-salary', 'Updated By'),
+            'created_at' => Yii::t('andahrm', 'Created At'),
+            'created_by' => Yii::t('andahrm', 'Created By'),
+            'updated_at' => Yii::t('andahrm', 'Updated At'),
+            'updated_by' => Yii::t('andahrm', 'Updated By'),
+            'new_edoc' => Yii::t('andahrm/position-salary', 'New Edoc'),
         ];
     }
+    
+    
+    public $new_edoc;
     
     public function attributeHints()
     {
@@ -134,6 +139,11 @@ class PersonPositionSalaryOld extends \yii\db\ActiveRecord
     public function getEdoc()
     {
         return $this->hasOne(Edoc::className(), ['id' => 'edoc_id']);
+    }
+    
+    public function getPositionId()
+    {
+        return $this->position_old_id;
     }
     
 }

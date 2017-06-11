@@ -90,6 +90,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     {
         return [
             'user_id' => Yii::t('andahrm/position-salary', 'User ID'),
+            'position_old_id' => Yii::t('andahrm/position-salary', 'Position Old ID'),
             'position_id' => Yii::t('andahrm/position-salary', 'Position ID'),
             'edoc_id' => Yii::t('andahrm/position-salary', 'Edoc ID'),
             'adjust_date' => Yii::t('andahrm/position-salary', 'Adjust Date'),
@@ -115,6 +116,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
         ];
     }
     
+    public $position_old_id;
     public $person_type_id;
     public $select_status;
     
@@ -127,7 +129,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
       
       $scenarios['new-person'] = [
           //'user_id',
-              'position_id', 'edoc_id', 'salary', 'user_id', 'level','status',
+              'position_id', 'edoc_id', 'salary', 'user_id', 'level','status','adjust_date'
           ];
           
       $scenarios['insert'] = [
@@ -232,6 +234,15 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     }
     public function getPositionTitleCode(){
         return $this->position->titleCode;
+    }
+    
+    #check exists record
+    public function getExists(){
+        return self::find()->where([
+            'user_id'=>$this->user_id,
+            'position_id'=>$this->position_id,
+            'edoc_id'=>$this->edoc_id,
+        ])->exists();
     }
     
 }

@@ -26,6 +26,7 @@ use andahrm\structure\models\Structure;
 use andahrm\structure\models\FiscalYear;
 use andahrm\structure\models\PositionLine;
 use andahrm\structure\models\Position;
+use andahrm\structure\models\PositionOld;
 use andahrm\structure\models\PersonType;
 
 /**
@@ -736,6 +737,53 @@ class DefaultController extends Controller
          ->andFilterWhere(['position.person_type_id'=>$person_type_id])
          ->all();
          return $this->MapData($datas,'id','title');
+     }
+     
+     public function actionGetPosition() {
+     $out = [];
+      $post = Yii::$app->request->post();
+     if (isset($post['depdrop_parents'])) {
+         $parents = $post['depdrop_parents'];
+         //print_r($parents);
+         $section_id = null;
+         $person_type_id = null;
+         $position_line_id = null;
+         $position_old = null;
+         if (isset($parents) && $parents != null) {
+             $section_id = $parents[0];
+             $person_type_id = isset($parents[1])?$parents[1]:$person_type_id;
+             $position_line_id = isset($parents[2])?$parents[2]:$position_line_id;
+             $position_old = isset($parents[3])?$parents[3]:$position_old;
+             
+             $out = $this->getPosition($section_id,$person_type_id,$position_line_id,$position_old);
+             echo Json::encode(['output'=>$out, 'selected'=>'']);
+             return;
+         }
+         }
+         echo Json::encode(['output'=>'', 'selected'=>'']);
+     }
+
+      protected function getPosition($section_id,$person_type_id=null,$position_line_id=null,$position_old=null){
+        //   if($person_type_id){
+        //       $person_type_id = PersonType::find($person_type_id)->indexBy('parent_id')->one();
+        //   }
+        //   echo $position_old;
+        //   exit();
+         if($position_old){ 
+            $datas = PositionOld::find()
+             ->andFilterWhere(['section_id'=>$section_id])
+             ->andFilterWhere(['position_line_id'=>$position_line_id])
+             ->andFilterWhere(['person_type_id'=>$person_type_id])
+             ->all();
+            return $this->MapData($datas,'id','codeTitle');
+         }else{
+             $datas = Position::find()
+             ->andFilterWhere(['section_id'=>$section_id])
+             ->andFilterWhere(['position_line_id'=>$position_line_id])
+             ->andFilterWhere(['person_type_id'=>$person_type_id])
+             ->all();
+            return $this->MapData($datas,'id','codeTitle');
+         }
      }
      
   
