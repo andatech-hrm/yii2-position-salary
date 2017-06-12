@@ -105,6 +105,7 @@ class PersonPositionSalaryOld extends \yii\db\ActiveRecord
     }
     
     
+    
     public $new_edoc;
     
     public function attributeHints()
