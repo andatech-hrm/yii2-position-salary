@@ -72,7 +72,8 @@ class PersonPositionSalaryOld extends \yii\db\ActiveRecord
             [['user_id', 'position_old_id', 'adjust_date', 'title', 'status', 'level', 'salary'], 'required'],
             [['user_id', 'position_old_id', 'edoc_id', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['adjust_date','new_edoc'], 'safe'],
-            [['step_adjust', 'step', 'level', 'salary'], 'number'],
+            [['step_adjust', 'step', 'salary'], 'number'],
+            [['level'], 'string', 'max' => 5],
             [['title'], 'string', 'max' => 255],
             [['position_old_id'], 'exist', 'skipOnError' => true, 'targetClass' => PositionOld::className(), 'targetAttribute' => ['position_old_id' => 'id']],
         ];
