@@ -10,8 +10,8 @@ use andahrm\edoc\models\Edoc;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 
-use kuakling\datepicker\behaviors\DateBuddhistBehavior;
-use kuakling\datepicker\behaviors\YearBuddhistBehavior;
+use andahrm\datepicker\behaviors\DateBuddhistBehavior;
+use andahrm\datepicker\behaviors\YearBuddhistBehavior;
 
 /**
  * This is the model class for table "person_position_salary_old".

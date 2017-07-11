@@ -12,8 +12,8 @@ use andahrm\person\models\Person;
 use andahrm\edoc\models\Edoc;
 use andahrm\structure\models\PositionOld;
 
-use kuakling\datepicker\behaviors\DateBuddhistBehavior;
-use kuakling\datepicker\behaviors\YearBuddhistBehavior;
+use andahrm\datepicker\behaviors\DateBuddhistBehavior;
+use andahrm\datepicker\behaviors\YearBuddhistBehavior;
 
 /**
  * This is the model class for table "person_contract_old".

@@ -13,7 +13,7 @@ use yii\web\JsExpression;
 use yii\helpers\Json;
 use backend\widgets\WizardMenu;
 
-use kuakling\datepicker\DatePicker;
+use andahrm\datepicker\DatePicker;
 use andahrm\setting\models\WidgetSettings;
 use andahrm\positionSalary\models\Topic;
 use andahrm\edoc\models\Edoc;

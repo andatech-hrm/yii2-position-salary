@@ -18,7 +18,7 @@ use andahrm\structure\models\FiscalYear;
     <?= $form->field($model, 'user_id')->dropDownList(PersonPosition::getList(),[]) ?>
 
     <?php //echo $form->field($model, 'year')->dropDownList(FiscalYear::getList(),[]) ?>
-    <?php echo $form->field($model, 'year')->widget(\kuakling\datepicker\YearBuddhist::className()) ?>
+    <?php echo $form->field($model, 'year')->widget(\andahrm\datepicker\YearBuddhist::className()) ?>
 
     <?= $form->field($model, 'phase')->dropDownList([1=>1,2=>2],[]) ?>
 
