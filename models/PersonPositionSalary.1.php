@@ -72,7 +72,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'position_id', 'adjust_date', 'title', 'status', 'level', 'salary','person_type_id' ], 'required'],
-            [['user_id', 'position_id','position_type_id','position_level_id', 'edoc_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
+            [['user_id', 'position_id', 'edoc_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['adjust_date','status','select_status'], 'safe'],
             [['step_adjust', 'salary','step','level'], 'number'],
             [['title'], 'string', 'max' => 255],
@@ -246,20 +246,6 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
             'position_id'=>$this->position_id,
             'edoc_id'=>$this->edoc_id,
         ])->exists();
-    }
-    
-    public function getPositionLevel()
-    {
-        return $this->hasOne(PositionLevel::className(), ['id' => 'position_level_id']);
-    }
-    
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPersonType()
-    {
-        return $this->hasOne(PersonType::className(), ['id' => 'person_type_id']);
     }
     
 }
