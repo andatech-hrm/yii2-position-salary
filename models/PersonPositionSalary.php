@@ -74,8 +74,9 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
             [['user_id', 'position_id', 'adjust_date', 'title', 'status', 'level', 'salary','person_type_id' ], 'required'],
             [['user_id', 'position_id','position_type_id','position_level_id', 'edoc_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['adjust_date','status','select_status'], 'safe'],
-            [['step_adjust', 'salary','step','level'], 'number'],
+            [['step_adjust', 'salary','step'], 'number'],
             [['title'], 'string', 'max' => 255],
+            [['level'], 'string', 'max' => 15],
             //[['step'], 'string', 'max' => 4],
             [['edoc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Edoc::className(), 'targetAttribute' => ['edoc_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Person::className(), 'targetAttribute' => ['user_id' => 'user_id']],
@@ -113,6 +114,9 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
             'new_position_id' => Yii::t('andahrm/position-salary', 'New Position'),
             'start_date' => Yii::t('andahrm/position-salary', 'Start Date'),
             'end_date' => Yii::t('andahrm/position-salary', 'End Date'),
+            
+            'position_type_id' => Yii::t('andahrm/structure', 'Position Type'),
+            'position_level_id' => Yii::t('andahrm/structure', 'Position Level'),
         ];
     }
     
