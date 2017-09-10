@@ -37,4 +37,9 @@ class PersonPositionSalaryQuery extends \yii\db\ActiveQuery
     {
         return parent::one($db);
     }
+    
+    public function delete($db = null)
+    {
+        return $this->one()->delete($db);
+    }
 }
