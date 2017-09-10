@@ -70,8 +70,8 @@ class PersonPositionSalaryOld extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'position_old_id', 'adjust_date', 'title', 'status', 'level', 'salary'], 'required'],
-            [['user_id', 'position_old_id', 'edoc_id', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
-            [['adjust_date','new_edoc'], 'safe'],
+            [['user_id',  'edoc_id', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
+            [['adjust_date','new_edoc','position_old_id'], 'safe'],
             [['step_adjust', 'step', 'salary'], 'number'],
             [['level'], 'string', 'max' => 5],
             [['title'], 'string', 'max' => 255],
