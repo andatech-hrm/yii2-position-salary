@@ -9,6 +9,7 @@ use andahrm\edoc\models\Edoc;
 
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 use andahrm\datepicker\behaviors\DateBuddhistBehavior;
 use andahrm\datepicker\behaviors\YearBuddhistBehavior;
@@ -69,12 +70,13 @@ class PersonPositionSalaryOld extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'position_old_id', 'adjust_date', 'title', 'status', 'level', 'salary'], 'required'],
+            //[['user_id', 'position_old_id', 'adjust_date', 'title', 'status', 'level', 'salary'], 'required'],
+            [['user_id', 'position_old_id', 'adjust_date', 'status', 'level', 'salary'], 'required'],
             [['user_id',  'edoc_id', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['adjust_date','new_edoc','position_old_id'], 'safe'],
             [['step_adjust', 'step', 'salary'], 'number'],
             [['level'], 'string', 'max' => 5],
-            [['title'], 'string', 'max' => 255],
+           //[['title'], 'string', 'max' => 255],
             [['position_old_id'], 'exist', 'skipOnError' => true, 'targetClass' => PositionOld::className(), 'targetAttribute' => ['position_old_id' => 'id']],
         ];
     }
@@ -92,6 +94,7 @@ class PersonPositionSalaryOld extends \yii\db\ActiveRecord
             'edoc_id' => Yii::t('andahrm/position-salary', 'Edoc ID'),
             'adjust_date' => Yii::t('andahrm/position-salary', 'Adjust Date'),
             'title' => Yii::t('andahrm/position-salary', 'Title'),
+            'title-list' => Yii::t('andahrm/position-salary', 'Title List'),
             'status' => Yii::t('andahrm/position-salary', 'Status'),
             'step_adjust' => Yii::t('andahrm/position-salary', 'Step Adjust'),
             'step' => Yii::t('andahrm/position-salary', 'Step'),
@@ -146,6 +149,74 @@ class PersonPositionSalaryOld extends \yii\db\ActiveRecord
     public function getPositionId()
     {
         return $this->position_old_id;
+    }
+    
+    
+   const STATUS_FIRST_TIME = 1; #บรรจุแรกเข้า
+   const STATUS_ADJUST = 2; #ปรับเงินเดือน
+   const STATUS_MOVE = 3; #ย้ายสายงาน
+   const STATUS_LEAVE = 4; #สินสุดการจ้าง
+   const STATUS_TRANSFER = 5; #โอน
+  
+    public static function itemsAlias($key) {
+        $items = [
+            'status' => [
+                self::STATUS_FIRST_TIME => Yii::t('andahrm/position-salary', 'First time'),
+                self::STATUS_ADJUST => Yii::t('andahrm/position-salary',  'Adjust salary'),
+                self::STATUS_MOVE => Yii::t('andahrm/position-salary',  'Move line'),
+                self::STATUS_LEAVE => Yii::t('andahrm/position-salary',  'Leave'),
+            ],
+        ];
+        return ArrayHelper::getValue($items, $key, []);
+    }
+    
+    public function getStatusLabel() {
+        return ArrayHelper::getValue($this->getItemStatus(), $this->status);
+    }
+
+    public static function getItemStatus() {
+          return self::itemsAlias('status');
+     }
+     
+     /*public $round;
+     
+     public function afterSave( $insert, $changedAttributes )
+    {
+            ++$this->round;
+            // Place your custom code here
+            if($this->round == 1){
+                // echo $this->status;
+                // echo $this->position_old_id;
+                switch($this->status){
+                    case self::STATUS_FIRST_TIME:
+                        $this->title = $this->position->title;
+                        $this->save(false);
+                        //exit();
+                    break;
+                    default:
+                        $this->title = $this->edoc->title;
+                        $this->save(false);
+                        //exit();
+                    break;
+                }
+                parent::afterSave( $insert, $changedAttributes );
+            }
+    }*/
+    
+    public function getTitle(){
+        $str = '';
+         switch($this->status){
+            case self::STATUS_FIRST_TIME:
+            case self::STATUS_MOVE:
+                $str = $this->position->title;
+                //exit();
+            break;
+            default:
+                $str = $this->edoc->title;
+                //exit();
+            break;
+        }
+        return $str;
     }
     
 }

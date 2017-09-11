@@ -96,6 +96,8 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
             'edoc_id' => Yii::t('andahrm/position-salary', 'Edoc ID'),
             'adjust_date' => Yii::t('andahrm/position-salary', 'Adjust Date'),
             'title' => Yii::t('andahrm/position-salary', 'Title'),
+            'title-list' => Yii::t('andahrm/position-salary', 'Title List'),
+            
             'select_status' => Yii::t('andahrm/position-salary', 'Status'),
             'status' => Yii::t('andahrm/position-salary', 'Status'),
             'step' => Yii::t('andahrm/position-salary', 'Step'),
