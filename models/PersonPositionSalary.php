@@ -71,11 +71,12 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'position_id', 'adjust_date', 'title', 'status', 'level', 'salary','person_type_id' ], 'required'],
+            //[['user_id', 'position_id', 'adjust_date', 'title', 'status', 'level', 'salary','person_type_id' ], 'required'],
+            [['user_id', 'position_id', 'adjust_date', 'status', 'level', 'salary','person_type_id' ], 'required'],
             [['user_id', 'position_id','position_type_id','position_level_id', 'edoc_id', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'integer'],
             [['adjust_date','status','select_status'], 'safe'],
             [['step_adjust', 'salary','step'], 'number'],
-            [['title'], 'string', 'max' => 255],
+            //[['title'], 'string', 'max' => 255],
             [['level'], 'string', 'max' => 15],
             //[['step'], 'string', 'max' => 4],
             [['edoc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Edoc::className(), 'targetAttribute' => ['edoc_id' => 'id']],
@@ -266,6 +267,22 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     public function getPersonType()
     {
         return $this->hasOne(PersonType::className(), ['id' => 'person_type_id']);
+    }
+    
+    public function getTitle(){
+        $str = '';
+         switch($this->status){
+            case self::STATUS_FIRST_TIME:
+            case self::STATUS_MOVE:
+                $str = $this->position->title;
+                //exit();
+            break;
+            default:
+                $str = $this->edoc->title;
+                //exit();
+            break;
+        }
+        return $str;
     }
     
 }
