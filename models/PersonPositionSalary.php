@@ -144,7 +144,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
          //'new_level', 'new_salary', 'new_position_id'
           ];
         $scenarios['update'] = [
-            'adjust_date','title', 'salary', 'position_id', 'level','status','edoc_id', 'step', 'salary','updated_at','updated_by'
+            'adjust_date', 'salary', 'position_id', 'level','status','edoc_id', 'step', 'salary','updated_at','updated_by'
           ];
       $scenarios[self::SCENA_STATUS2] = [
          'user_id' ,'salary', 'position_id', 'level','status',
