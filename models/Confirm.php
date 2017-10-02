@@ -50,11 +50,11 @@ class Confirm extends Model
         $str = '';
         if($val1!=$val2){
             $str=$val1.
-            '<br/><span class="text-success">'.Yii::t('andhrm','To be').'</span><br/>'.
+            '<br/><span class="text-success">'.Yii::t('andahrm','To be').'</span><br/>'.
             $val2;
         }else{
             $str=$val1.
-            '<br/><span class="text-warning">'.Yii::t('andhrm','No change').'</span>';
+            '<br/><span class="text-warning">'.Yii::t('andahrm','No change').'</span>';
         }
         return $str;
         
