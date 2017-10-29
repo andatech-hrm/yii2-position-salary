@@ -277,17 +277,24 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
                 //exit();
             break;
             case self::STATUS_MOVE:
-                $str = $this->position->title." ".$this->edoc->title;
+                $arr_str[] = $this->position->title;
+                $arr_str[] = $this->edoc->title;
+                $arr_str = array_filter($arr_str);
+                $str = implode("<br/>",$arr_str);
                 //exit();
             break;
             case self::STATUS_ADJUST:
-                $str = $this->position->title."<br/>".$this->edoc->title;
-                //exit();
+               $arr_str[] = $this->position->title;
+                $arr_str[] = $this->edoc->title;
+                $arr_str = array_filter($arr_str);
+                $str = implode("<br/>",$arr_str);
             break;
             
             default:
-                $str = $this->position->title;
-                //exit();
+                $arr_str[] = $this->position->title;
+                $arr_str[] = $this->edoc->title;
+                $arr_str = array_filter($arr_str);
+                $str = implode("<br/>",$arr_str);
             break;
         }
         return $str;
