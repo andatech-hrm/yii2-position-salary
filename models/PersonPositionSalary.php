@@ -282,7 +282,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
             break;
             
             default:
-                $str = $this->position->title." ".$this->edoc->title;
+                $str = $this->position->title;
                 //exit();
             break;
         }
