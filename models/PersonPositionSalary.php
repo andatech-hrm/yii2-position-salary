@@ -270,7 +270,6 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     }
     
     public function getTitle(){
-        $str = '';
         $str = $this->position->title;
          switch($this->status){
             case self::STATUS_FIRST_TIME:
@@ -281,6 +280,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
                 $str = $this->position->title." ".$this->edoc->title;
                 //exit();
             break;
+            
             default:
                 $str = $this->position->title." ".$this->edoc->title;
                 //exit();
