@@ -35,7 +35,7 @@ use andahrm\datepicker\behaviors\YearBuddhistBehavior;
  * @property Person $user
  * @property Position $position
  */
-class PersonPositionSalary extends \yii\db\ActiveRecord
+class PersonPositionSalary1 extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
