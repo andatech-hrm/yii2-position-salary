@@ -281,7 +281,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
                 //exit();
             break;
             case self::STATUS_ADJUST:
-                $str = $this->edoc->title;
+                $str = $this->position->title."<br/>".$this->edoc->title;
                 //exit();
             break;
             
