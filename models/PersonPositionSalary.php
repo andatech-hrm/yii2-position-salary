@@ -286,7 +286,7 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
                 //exit();
             break;
         }
-        return $str.$this->status.'123';
+        return $str;
     }
     
 }
