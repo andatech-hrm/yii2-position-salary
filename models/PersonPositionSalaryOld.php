@@ -215,8 +215,9 @@ class PersonPositionSalaryOld extends \yii\db\ActiveRecord
                 //exit();
             break;
             default:
-                $str = $this->position->title;
-                $str = $str==''?$this->edoc->title:'';
+                // $str = $this->position->title;
+                // $str = $str==''?$this->edoc->title:'';
+                $str = $this->position->title."<br/>".$this->edoc->title;
                 //exit();
             break;
         }
