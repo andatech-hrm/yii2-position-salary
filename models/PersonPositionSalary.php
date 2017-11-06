@@ -272,23 +272,23 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
     public function getTitle(){
         $str = $this->position->title;
          switch($this->status){
-            case self::STATUS_FIRST_TIME:
-                 $str = $this->position->title;
-                //exit();
-            break;
-            case self::STATUS_MOVE:
-                $arr_str[] = $this->position->title;
-                $arr_str[] = $this->edoc->title;
-                $arr_str = array_filter($arr_str);
-                $str = implode("<br/>",$arr_str);
-                //exit();
-            break;
-            case self::STATUS_ADJUST:
-               $arr_str[] = $this->position->title;
-                $arr_str[] = $this->edoc->title;
-                $arr_str = array_filter($arr_str);
-                $str = implode("<br/>",$arr_str);
-            break;
+            // case self::STATUS_FIRST_TIME:
+            //      $str = $this->position->title;
+            //     //exit();
+            // break;
+            // case self::STATUS_MOVE:
+            //     $arr_str[] = $this->position->title;
+            //     $arr_str[] = $this->edoc->title;
+            //     $arr_str = array_filter($arr_str);
+            //     $str = implode("<br/>",$arr_str);
+            //     //exit();
+            // break;
+            // case self::STATUS_ADJUST:
+            //   $arr_str[] = $this->position->title;
+            //     $arr_str[] = $this->edoc->title;
+            //     $arr_str = array_filter($arr_str);
+            //     $str = implode("<br/>",$arr_str);
+            // break;
             
             default:
                 $arr_str[] = $this->position->title;
