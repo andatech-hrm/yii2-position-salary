@@ -300,4 +300,21 @@ class PersonPositionSalary extends \yii\db\ActiveRecord
         return $str;
     }
     
+    
+    public function afterSave($insert, $changedAttributes) {
+        parent::afterSave($insert, $changedAttributes);
+        
+        $model = Person::findOne($this->user_id);
+        $position = $model->positionLast;
+        $model->position_id = $position?$position->id:null;
+        if($model->save(false)){
+            return true;
+        }else{
+            echo "Error:afterSave<br/>";
+            print_r($model->getErrors());
+            exit();
+        }
+        
+    }
+    
 }
