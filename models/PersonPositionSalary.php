@@ -283,29 +283,45 @@ class PersonPositionSalary extends \yii\db\ActiveRecord {
 
     public function afterSave($insert, $changedAttributes) {
         parent::afterSave($insert, $changedAttributes);
+//        print_r($this->user_id);
+//        exit();
         self::updatePostion($this->user_id);
     }
 
     public static function updatePostion($user_id) {
         $model = Person::findOne($user_id);
         $model->scenario = Person::SCENARIO_UPDATE_POSITION;
-       // $model->birthday = Yii::$app->formatter->asDate($model->birthday);
-       // $model->birthday = \DateTime::createFromFormat('Y-m-d', $model->birthday);
+        // $model->birthday = Yii::$app->formatter->asDate($model->birthday);
+        // $model->birthday = \DateTime::createFromFormat('Y-m-d', $model->birthday);
 
         $position = $model->positionLast;
         $model->position_id = $position ? $position->id : null;
         //echo "Before<br/>";
         //echo $model->birthday . "<br/>";
         //echo $model->position_id;
-
         //print_r($model->attributes);
+
 
         if ($model->save()) {
             //echo "After<br/>";
-           // print_r($model->attributes);
+            // print_r($model->attributes);
             //echo $model->birthday . "<br/>";
-           // echo $model->position_id;
+            // echo $model->position_id;
             //exit();
+
+            $modelLast = self::find()->where(['position_id' => $model->position_id])->orderBy(['adjust_date' => SORT_DESC])->one();
+            if ($modelLast) {
+                $where = "position_id = {$model->position_id} ";
+                $modelOld = Person::updateAll(['position_id' => null], $where);
+
+                $where = "user_id = {$modelLast->user_id}";
+                $modelCurrent = Person::updateAll(['position_id' => $model->position_id], $where);
+//                echo $where;
+//                exit();
+            }
+
+
+
             return true;
         } else {
             echo "Error:afterSave<br/>";
